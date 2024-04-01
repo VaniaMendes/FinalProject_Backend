@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="project_backend:war exploded" />
+    </artifacts-to-build>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e170a628-05be-4b72-b134-24716f0fd2d1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2dHw3tdNOXHxuqnvqrjzdgjSLrN" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JBoss/WildFly Server.JBoss/WildFly 30.0.1.Final.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/AoR/finalProject/FinalProject_backend/project5",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="JBoss/WildFly 30.0.1.Final" type="JBossConfiguration" factoryName="Local" APPLICATION_SERVER_NAME="JBoss/WildFly 30.0.1.Final" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
+      <option name="OPEN_IN_BROWSER_URL" value="http://localhost:3000" />
+      <option name="BROWSER_ID" value="98ca6316-2f89-46d9-a9e5-fa9e2b0625b3" />
+      <option name="UPDATING_POLICY" value="restart-server" />
+      <deployment>
+        <artifact name="project_backend:war exploded">
+          <settings />
+        </artifact>
+      </deployment>
+      <server-settings>
+        <option name="SERVER" />
+        <option name="BINDING_SET_NAME" value="" />
+        <option name="DOMAIN" value="false" />
+        <option name="SERVER_GROUP" value="main-server-group" />
+        <option name="USERNAME" value="" />
+        <option name="CREDENTIAL_ALIAS" />
+      </server-settings>
+      <predefined_log_file enabled="true" id="JBoss" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="53220" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="project_backend:war exploded" />
+        </option>
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-21.0.1-openjdk-21.0.1-f644763e9732-f98dd351" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e170a628-05be-4b72-b134-24716f0fd2d1" name="Changes" comment="" />
+      <created>1709678118086</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1709678118086</updated>
+      <workItem from="1709678119740" duration="1704000" />
+      <workItem from="1709742914874" duration="5000" />
+      <workItem from="1709762512818" duration="1587000" />
+      <workItem from="1709810059711" duration="36000" />
+      <workItem from="1709811540487" duration="364000" />
+      <workItem from="1709812517112" duration="1909000" />
+      <workItem from="1709819589163" duration="1582000" />
+      <workItem from="1709835972589" duration="1125000" />
+      <workItem from="1709850380451" duration="4678000" />
+      <workItem from="1709890621873" duration="1311000" />
+      <workItem from="1709911852231" duration="599000" />
+      <workItem from="1709918227124" duration="670000" />
+      <workItem from="1710004053457" duration="6927000" />
+      <workItem from="1710093228254" duration="1830000" />
+      <workItem from="1710158040000" duration="3454000" />
+      <workItem from="1710181582301" duration="637000" />
+      <workItem from="1710191000311" duration="625000" />
+      <workItem from="1710236076056" duration="6313000" />
+      <workItem from="1710279067420" duration="649000" />
+      <workItem from="1710323179832" duration="618000" />
+      <workItem from="1710340411895" duration="1245000" />
+      <workItem from="1710355428033" duration="6592000" />
+      <workItem from="1710408969407" duration="7557000" />
+      <workItem from="1710449472773" duration="2709000" />
+      <workItem from="1710456057332" duration="421000" />
+      <workItem from="1710495709861" duration="2633000" />
+      <workItem from="1710512290891" duration="1220000" />
+      <workItem from="1710577968590" duration="4696000" />
+      <workItem from="1710693428486" duration="3453000" />
+      <workItem from="1710767048409" duration="2613000" />
+      <workItem from="1710776027838" duration="638000" />
+      <workItem from="1710787350661" duration="1759000" />
+      <workItem from="1710841002235" duration="3829000" />
+      <workItem from="1710883523430" duration="702000" />
+      <workItem from="1710929763155" duration="2358000" />
+      <workItem from="1711014489254" duration="10731000" />
+      <workItem from="1711055545217" duration="1191000" />
+      <workItem from="1711100216215" duration="3756000" />
+      <workItem from="1711120886516" duration="940000" />
+      <workItem from="1711193158995" duration="661000" />
+      <workItem from="1711307241988" duration="191000" />
+      <workItem from="1711308741124" duration="2313000" />
+      <workItem from="1711311291229" duration="1374000" />
+      <workItem from="1711313310655" duration="3720000" />
+      <workItem from="1711829084757" duration="40000" />
+      <workItem from="1711979592956" duration="74000" />
+      <workItem from="1711979809166" duration="16000" />
+      <workItem from="1711980375305" duration="123000" />
+      <workItem from="1711980548706" duration="8000" />
+      <workItem from="1711981942217" duration="71000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
