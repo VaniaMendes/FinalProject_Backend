@@ -24,6 +24,8 @@ public class User{
     @XmlElement
     private boolean isActive;
     @XmlElement
+    private boolean isConfirmed;
+    @XmlElement
     private String typeOfUser;
 
 
@@ -39,6 +41,7 @@ public class User{
         this.token = token;
         this.typeOfUser = getTypeOfUser();
         this.isActive = true;
+        this.isConfirmed = false;
     }
 
     public User(){}
@@ -124,6 +127,12 @@ public class User{
         this.typeOfUser = typeOfUser;
     }
 
+    public boolean isConfirmed() {
+        return isConfirmed;
+    }
 
+    public void setConfirmed(boolean confirmed) {
+        isConfirmed = confirmed;
+    }
 }
 

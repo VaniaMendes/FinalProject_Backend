@@ -45,6 +45,9 @@ public class UserEntity implements Serializable{
 	@Column(name="isActive", nullable=false, unique = false, updatable = true)
 	private boolean isActive;
 
+	@Column(name="isConfirmed", nullable=false, unique = false, updatable = true)
+	private boolean isConfirmed;
+
 	@Column(name="typeOfUser", nullable=false, unique = false, updatable = true)
 	private String typeOfUser;
 
@@ -146,5 +149,21 @@ public class UserEntity implements Serializable{
 
 	public void setTypeOfUser(String typeOfUser) {
 		this.typeOfUser = typeOfUser;
+	}
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean active) {
+		isActive = active;
+	}
+
+	public boolean isConfirmed() {
+		return isConfirmed;
+	}
+
+	public void setConfirmed(boolean confirmed) {
+		isConfirmed = confirmed;
 	}
 }
