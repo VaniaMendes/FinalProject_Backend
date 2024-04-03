@@ -47,6 +47,7 @@ public class UserService {
         boolean isImageValid = userBean.isImageUrlValid(user.getImgURL());
         boolean isPhoneValid = userBean.isPhoneNumberValid(user.getPhoneNumber());
 
+        String tokenConfirmation = userBean.register(user);
 
         if (isFieldEmpty) {
             response = Response.status(422).entity("There's an empty field. ALl fields must be filled in").build();
@@ -63,8 +64,8 @@ public class UserService {
         } else if (!isPhoneValid) {
             response = Response.status(422).entity("Invalid phone number").build();
 
-        } else if (userBean.register(user)) {
-            response = Response.status(Response.Status.CREATED).entity("User registered successfully").build(); //status code 201
+        } else if (tokenConfirmation != null) {
+            response = Response.status(Response.Status.CREATED).entity(tokenConfirmation).build(); //status code 201
 
         } else {
             response = Response.status(Response.Status.BAD_REQUEST).entity("Something went wrong").build(); //status code 400
@@ -116,6 +117,17 @@ public class UserService {
         }
     }
 
+
+    @PUT
+    @Path("/confirmationAccount")
+    public Response confirmAccount(@QueryParam("token") String tokenConfirmation) {
+        boolean confirmed = userBean.confirmUser(tokenConfirmation);
+        if (confirmed) {
+            return Response.status(Response.Status.OK).entity("User confirmed successfully").build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid confirmation token").build();
+        }
+    }
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)

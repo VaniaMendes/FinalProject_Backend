@@ -3,6 +3,8 @@ package aor.paj.dto;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.util.UUID;
+
 @XmlRootElement
 public class User{
     @XmlElement
@@ -27,6 +29,8 @@ public class User{
     private boolean isConfirmed;
     @XmlElement
     private String typeOfUser;
+    @XmlElement
+    private String tokenConfirmation;
 
 
     public User(String username, String password, String email, String firstName, String lastName,
@@ -41,10 +45,19 @@ public class User{
         this.token = token;
         this.typeOfUser = getTypeOfUser();
         this.isActive = true;
-        this.isConfirmed = false;
+        this.isConfirmed = isConfirmed();
+        // Gerar um token de confirmação
+        this.tokenConfirmation = generateTokenConfirmation();
     }
 
     public User(){}
+
+    // Método para gerar um token de confirmação
+    private String generateTokenConfirmation() {
+        // Aqui você pode adicionar a lógica para gerar um token de confirmação
+        // Por exemplo, você pode usar java.util.UUID para gerar um token único
+        return UUID.randomUUID().toString();
+    }
 
     public String getUsername() {
         return username;
@@ -133,6 +146,14 @@ public class User{
 
     public void setConfirmed(boolean confirmed) {
         isConfirmed = confirmed;
+    }
+
+    public String getTokenConfirmation() {
+        return tokenConfirmation;
+    }
+
+    public void setTokenConfirmation(String tokenConfirmation) {
+        this.tokenConfirmation = tokenConfirmation;
     }
 }
 

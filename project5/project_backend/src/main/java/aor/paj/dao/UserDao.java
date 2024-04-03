@@ -16,7 +16,13 @@ public class UserDao extends AbstractDao<UserEntity> {
 		super(UserEntity.class);
 	}
 
-
+	public UserEntity findUserByTokenConfirmation(String tokenConfirmation){
+		try{
+			return (UserEntity) em.createNamedQuery("User.findUserByTokenConfirmation").setParameter("tokenConfirmation", tokenConfirmation).getSingleResult();
+		}catch(NoResultException e){
+			return null;
+		}
+	}
 
 	public UserEntity findUserByUsername(String username) {
 		try {

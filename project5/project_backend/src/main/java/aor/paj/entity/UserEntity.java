@@ -12,44 +12,47 @@ import java.util.Set;
 @NamedQuery(name = "User.findUserByToken", query = "SELECT DISTINCT u FROM UserEntity u WHERE u.token = :token")
 @NamedQuery(name = "User.findAllUsers", query = "SELECT u FROM UserEntity u " )
 @NamedQuery(name="User.findUserByName", query = "SELECT u FROM UserEntity u WHERE u.firstName=:name OR u.lastName = :name")
-public class UserEntity implements Serializable{
+@NamedQuery(name="User.findUserByTokenConfirmation", query = "SELECT u FROM UserEntity u WHERE u.tokenConfirmation = :tokenConfirmation")
+public class UserEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="username", nullable=false, unique = false, updatable = true)
+	@Column(name = "username", nullable = false, unique = false, updatable = true)
 	private String username;
 
-	@Column(name="email", nullable=false, unique = true, updatable = true)
+	@Column(name = "email", nullable = false, unique = true, updatable = true)
 	private String email;
 
 	//user's name
-	@Column(name="firstName", nullable=false, unique = false, updatable = true)
+	@Column(name = "firstName", nullable = false, unique = false, updatable = true)
 	private String firstName;
 
-	@Column(name="lastName", nullable=false, unique = false, updatable = true)
+	@Column(name = "lastName", nullable = false, unique = false, updatable = true)
 	private String lastName;
 
-	@Column(name="phoneNumber", nullable=false, unique = false, updatable = true)
+	@Column(name = "phoneNumber", nullable = false, unique = false, updatable = true)
 	private String phoneNumber;
 
-	@Column(name="token", nullable=true, unique = true, updatable = true)
+	@Column(name = "token", nullable = true, unique = true, updatable = true)
 	private String token;
 
-	@Column(name="password", nullable=false, unique = false, updatable = true)
+	@Column(name = "password", nullable = false, unique = false, updatable = true)
 	private String password;
 
 
-	@Column(name="imgURL", nullable=false, unique = false, updatable = true)
+	@Column(name = "imgURL", nullable = false, unique = false, updatable = true)
 	private String imgURL;
-	@Column(name="isActive", nullable=false, unique = false, updatable = true)
+	@Column(name = "isActive", nullable = false, unique = false, updatable = true)
 	private boolean isActive;
 
-	@Column(name="isConfirmed", nullable=false, unique = false, updatable = true)
+	@Column(name = "isConfirmed", nullable = false, unique = false, updatable = true)
 	private boolean isConfirmed;
 
-	@Column(name="typeOfUser", nullable=false, unique = false, updatable = true)
+	@Column(name = "typeOfUser", nullable = false, unique = false, updatable = true)
 	private String typeOfUser;
+	@Column(name = "token_Confirmation", nullable = true, unique = true, updatable = false)
+	private String tokenConfirmation;
 
 
 	@OneToMany(mappedBy = "owner")
@@ -57,7 +60,8 @@ public class UserEntity implements Serializable{
 
 
 	//default empty constructor
-	public UserEntity() {}
+	public UserEntity() {
+	}
 
 	public String getEmail() {
 		return email;
@@ -89,6 +93,7 @@ public class UserEntity implements Serializable{
 
 	/**
 	 * This method stores the password hashed
+	 *
 	 * @param password recieved as hashed
 	 */
 	public void setPassword(String password) {
@@ -138,6 +143,9 @@ public class UserEntity implements Serializable{
 	public boolean getIsActive() {
 		return isActive;
 	}
+	public boolean getIsConfirmed() {
+		return isConfirmed;
+	}
 
 	public void setIsActive(boolean isActive) {
 		this.isActive = isActive;
@@ -166,4 +174,9 @@ public class UserEntity implements Serializable{
 	public void setConfirmed(boolean confirmed) {
 		isConfirmed = confirmed;
 	}
+
+	public void setTokenConfirmation(String tokenConfirmation) {
+		this.tokenConfirmation = tokenConfirmation;
+	}
 }
+

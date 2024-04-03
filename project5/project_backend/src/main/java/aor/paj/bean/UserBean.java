@@ -4,7 +4,6 @@ import aor.paj.dao.CategoryDao;
 import aor.paj.dao.TaskDao;
 import aor.paj.dao.UserDao;
 import aor.paj.dto.LoginDto;
-import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
 import aor.paj.entity.CategoryEntity;
@@ -12,33 +11,21 @@ import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
 import aor.paj.utils.EncryptHelper;
 import jakarta.ejb.EJB;
-import jakarta.ejb.EntityBean;
-import jakarta.ejb.Stateless;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
-import jakarta.json.bind.JsonbConfig;
 import jakarta.ejb.Singleton;
-import jakarta.inject.Inject;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
-import jakarta.ws.rs.HeaderParam;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.IOException;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.SecureRandom;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 
 @Singleton
 public class UserBean implements Serializable {
@@ -54,6 +41,11 @@ public class UserBean implements Serializable {
 
     @EJB
     EncryptHelper encryptHelper;
+
+    @EJB
+    EmailService emailService;
+
+
 
     public UserBean(){
     }
@@ -257,6 +249,7 @@ public class UserBean implements Serializable {
             userDto.setLastName(userEntity.getLastName());
             userDto.setTypeOfUser(userEntity.getTypeOfUser());
             userDto.setActive(userEntity.getIsActive());
+            userDto.setConfirmed(userEntity.getIsConfirmed());
             return userDto;
         }
         return null;
@@ -285,21 +278,51 @@ public class UserBean implements Serializable {
         userEntity.setLastName(user.getLastName());
         userEntity.setIsActive(true);
         userEntity.setTypeOfUser(user.getTypeOfUser());
+        userEntity.setConfirmed(user.isConfirmed());
+        userEntity.setTokenConfirmation(user.getTokenConfirmation());
         return userEntity;
     }
 
 
-    public boolean register(User user){
+    public String register(User user){
         UserEntity u= userDao.findUserByUsername(user.getUsername());
 
         if (u==null){
             user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
+            //Gerar um token de confirmação
+            String tokenConfirmation = UUID.randomUUID().toString();
+            //Guardar o token de confirmação
+            user.setTokenConfirmation(tokenConfirmation);
+            // Se o user é "admin", definir isConfirmed como true
+            if (user.getUsername().equals("admin")) {
+                user.setConfirmed(true);
+            } else {
+                user.setConfirmed(false);
+            }
             userDao.persist(convertUserDtotoUserEntity(user));
-            return true;
+            sendConfirmationEmail("vsgm13@outlook.pt", tokenConfirmation);
+            return tokenConfirmation;
         }else
-            return false;
+            return null;
     }
 
+    public boolean confirmUser(String tokenConfirmation) {
+        UserEntity userEntity = userDao.findUserByTokenConfirmation(tokenConfirmation);
+        if (userEntity != null) {
+            userEntity.setConfirmed(true);
+            userDao.update(userEntity);
+            return true;
+        }
+        return false;
+    }
+
+    public void sendConfirmationEmail(String to, String token) {
+        // Enviar email de confirmação
+        String subject = "Account Confirmation";
+        String body = "Thank you for registering. Click on the following link to confirm your account: http://localhost:3000/confirmationAccount?token=" + token ;
+
+        emailService.sendEmail(to, subject, body);
+    }
     public boolean registerByPO(String token,User user){
         UserEntity userEntityPO = userDao.findUserByToken(token);
 
@@ -309,7 +332,18 @@ public class UserBean implements Serializable {
 
             if (u == null) {
                 user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
+                //Gerar um token de confirmação
+                String tokenConfirmation = UUID.randomUUID().toString();
+                //Guardar o token de confirmação
+                user.setTokenConfirmation(tokenConfirmation);
+                // Se o user é "admin", definir isConfirmed como true
+                if (user.getUsername().equals("admin")) {
+                    user.setConfirmed(true);
+                } else {
+                    user.setConfirmed(false);
+                }
                 userDao.persist(convertUserDtotoUserEntity(user));
+                sendConfirmationEmail("vsgm13@outlook.pt", tokenConfirmation);
                 return true;
             } else
                 return false;

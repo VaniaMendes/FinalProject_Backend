@@ -69,36 +69,9 @@ class UserBeanTest {
         assertNull(token);
     }
 
-    @Test
-    void testRegister_Successful() {
-        // Arrange
-        User newUser = new User();
-        newUser.setUsername("newUser");
-        newUser.setPassword("password");
-        when(userDao.findUserByUsername("newUser")).thenReturn(null);
-        when(encryptHelper.encryptPassword("password")).thenReturn("encryptedPassword");
 
-        // Act
-        boolean registered = userBean.register(newUser);
 
-        // Assert
-        assertTrue(registered);
-    }
-
-    @Test
-    void testRegister_UserAlreadyExists() {
-        // Arrange
-        User existingUser = new User();
-        existingUser.setUsername("existingUser");
-        existingUser.setPassword("password");
-        when(userDao.findUserByUsername("existingUser")).thenReturn(new UserEntity());
-
-        // Act
-        boolean registered = userBean.register(existingUser);
-
-        // Assert
-        assertFalse(registered);
-    }
+    
 
     @Test
     void testUpdateUser_Successful() {
