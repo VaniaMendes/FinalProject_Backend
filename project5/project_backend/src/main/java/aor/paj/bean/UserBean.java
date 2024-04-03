@@ -64,6 +64,13 @@ public class UserBean implements Serializable {
         return null;
     }
 
+    public User getUserByEmail(String email){
+        UserEntity userEntity = userDao.findUserByEmail(email);
+        User u = null;
+        u = convertUserEntityToDto(userEntity);
+        return u;
+    }
+
     public List<User> getAllUsers() {
             List<User> users = new ArrayList<>();
             List<UserEntity> userEntities = userDao.findAllUsers();
@@ -284,7 +291,16 @@ public class UserBean implements Serializable {
     }
 
 
-    public String register(User user){
+    public boolean changePassword(String email, String newPassword){
+        UserEntity userEntity = userDao.findUserByEmail(email);
+        if(userEntity != null){
+            userEntity.setPassword(encryptHelper.encryptPassword(newPassword));
+            return userDao.update(userEntity);
+        }
+        return false;
+    }
+
+    public boolean register(User user){
         UserEntity u= userDao.findUserByUsername(user.getUsername());
 
         if (u==null){
@@ -301,19 +317,38 @@ public class UserBean implements Serializable {
             }
             userDao.persist(convertUserDtotoUserEntity(user));
             sendConfirmationEmail("vsgm13@outlook.pt", tokenConfirmation);
-            return tokenConfirmation;
+            return true;
         }else
-            return null;
+            return false;
     }
 
     public boolean confirmUser(String tokenConfirmation) {
         UserEntity userEntity = userDao.findUserByTokenConfirmation(tokenConfirmation);
         if (userEntity != null) {
             userEntity.setConfirmed(true);
+            userEntity.setTokenConfirmation(null);
             userDao.update(userEntity);
             return true;
         }
         return false;
+    }
+
+    public boolean passwordRecovery(String email){
+        UserEntity userEntity = userDao.findUserByEmail(email);
+        if(userEntity != null){
+
+            sendPasswordRecoveryEmail("vsgm13@outlook.pt", email);
+            return true;
+        }
+        return false;
+    }
+
+    public void sendPasswordRecoveryEmail(String to, String email) {
+        // Enviar email de recuperação de password
+        String subject = "Password Recovery";
+        String body = "Click on the following link to recover your password: http://localhost:3000/newPassword?email=" + email ;
+
+        emailService.sendEmail(to, subject, body);
     }
 
     public void sendConfirmationEmail(String to, String token) {
@@ -336,7 +371,7 @@ public class UserBean implements Serializable {
                 String tokenConfirmation = UUID.randomUUID().toString();
                 //Guardar o token de confirmação
                 user.setTokenConfirmation(tokenConfirmation);
-                // Se o user é "admin", definir isConfirmed como true
+                // Se o user é "admin", definir isConfirmed como true para ter acesso à aplicação
                 if (user.getUsername().equals("admin")) {
                     user.setConfirmed(true);
                 } else {
@@ -484,9 +519,6 @@ public class UserBean implements Serializable {
 
         return wasRemovedToken;
     }
-
-
-
 
 
     //Método em que o output é o objeto UserDetails que tem todos os atributos iguais ao User menos a pass

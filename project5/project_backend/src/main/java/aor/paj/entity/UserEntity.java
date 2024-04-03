@@ -51,7 +51,7 @@ public class UserEntity implements Serializable {
 
 	@Column(name = "typeOfUser", nullable = false, unique = false, updatable = true)
 	private String typeOfUser;
-	@Column(name = "token_Confirmation", nullable = true, unique = true, updatable = false)
+	@Column(name = "token_Confirmation", nullable = true, unique = true, updatable = true)
 	private String tokenConfirmation;
 
 
@@ -91,11 +91,7 @@ public class UserEntity implements Serializable {
 		return password;
 	}
 
-	/**
-	 * This method stores the password hashed
-	 *
-	 * @param password recieved as hashed
-	 */
+
 	public void setPassword(String password) {
 		this.password = password;
 	}

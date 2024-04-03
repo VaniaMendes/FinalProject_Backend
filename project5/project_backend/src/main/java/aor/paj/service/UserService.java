@@ -47,7 +47,7 @@ public class UserService {
         boolean isImageValid = userBean.isImageUrlValid(user.getImgURL());
         boolean isPhoneValid = userBean.isPhoneNumberValid(user.getPhoneNumber());
 
-        String tokenConfirmation = userBean.register(user);
+        boolean tokenConfirmation = userBean.register(user);
 
         if (isFieldEmpty) {
             response = Response.status(422).entity("There's an empty field. ALl fields must be filled in").build();
@@ -64,9 +64,8 @@ public class UserService {
         } else if (!isPhoneValid) {
             response = Response.status(422).entity("Invalid phone number").build();
 
-        } else if (tokenConfirmation != null) {
-            response = Response.status(Response.Status.CREATED).entity(tokenConfirmation).build(); //status code 201
-
+        }else if(tokenConfirmation){
+            response = Response.status(Response.Status.CREATED).entity("User registered successfully").build();
         } else {
             response = Response.status(Response.Status.BAD_REQUEST).entity("Something went wrong").build(); //status code 400
 
@@ -117,6 +116,50 @@ public class UserService {
         }
     }
 
+    @PUT
+    @Path("/changePassword")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response changePassword(@HeaderParam("email") String email, @QueryParam("password1") String password1, @QueryParam("password2") String password2) {
+        if (email == null || password1 == null || password2 == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Missing parameters").build();
+        }
+
+        User user = userBean.getUserByEmail(email);
+        if (user == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Email not valid").build();
+        }
+
+        if (password1.equals(user.getPassword())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Password is the same").build();
+        }
+
+        if (!password1.equals(password2)) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Passwords don't match").build();
+        }
+
+        boolean changed = userBean.changePassword(email, password1);
+        if (changed) {
+            return Response.status(Response.Status.OK).entity("Password changed successfully").build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Failed to change password").build();
+        }
+    }
+
+
+
+
+    //Endpoint só para enviar o email de recuperação da password
+    @GET
+    @Path("/passwordRecovery")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response passwordRecovery(@QueryParam("email") String email) {
+        boolean sent = userBean.passwordRecovery(email);
+        if (sent) {
+            return Response.status(Response.Status.OK).entity("Please check your email box").build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Email not sent").build();
+        }
+    }
 
     @PUT
     @Path("/confirmationAccount")
