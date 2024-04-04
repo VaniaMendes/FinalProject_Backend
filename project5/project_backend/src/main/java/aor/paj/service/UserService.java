@@ -116,6 +116,53 @@ public class UserService {
         }
     }
 
+    //Endpoint para filtrar o nome do user na tabela de users
+    @GET
+    @Path("/filterByName")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getUserByName(@HeaderParam("token") String token, @QueryParam("prefix") String prefix) {
+        if (token != null) {
+            User user = userBean.getUserByToken(token);
+            if (user != null) {
+                List<User> users = userBean.getUsersByFirstName(prefix);
+                if (users != null && !users.isEmpty()) {
+                    return Response.ok(users).build();
+                } else {
+                    return Response.status(Response.Status.NOT_FOUND).entity("No users found").build();
+                }
+            } else {
+                return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized access").build();
+            }
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Missing token").build();
+        }
+    }
+
+    @GET
+    @Path("/filterByEmail")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getUserByEmail(@HeaderParam("token") String token, @QueryParam("prefix") String prefix) {
+        if (token != null) {
+            User user = userBean.getUserByToken(token);
+            if (user != null) {
+                List<User> users = userBean.getUsersByEmail(prefix);
+                if (users != null && !users.isEmpty()) {
+                    return Response.ok(users).build();
+                } else {
+                    return Response.status(Response.Status.NOT_FOUND).entity("No users found").build();
+                }
+            } else {
+                return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized access").build();
+            }
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Missing token").build();
+        }
+    }
+
+
+    //Altera a password do utilizador no link enviado por email
     @PUT
     @Path("/changePassword")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -507,3 +554,5 @@ public class UserService {
     }
 
 }
+
+

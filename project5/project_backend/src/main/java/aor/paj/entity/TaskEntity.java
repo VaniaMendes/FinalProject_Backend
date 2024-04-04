@@ -21,9 +21,7 @@ import java.time.LocalDate;
 @NamedQuery(name = "Task.findFilterTasks", query = "SELECT t FROM TaskEntity t WHERE t.category.idCategory = :category AND t.owner.username=:username")
 @NamedQuery(name="Task.findTaskByUserNameFilter", query="SELECT a FROM TaskEntity a WHERE a.owner.username = :username")
 @NamedQuery(name = "Task.findTasksByCategoryFilter", query = "SELECT t FROM TaskEntity t WHERE t.category.idCategory = :category")
-
 @NamedQuery(name = "Task.findTotalTasksByUSer", query = "SELECT COUNT(t) FROM TaskEntity t WHERE t.owner.username = :username")
-
 @NamedQuery(name = "Task.countTasksByStateForUser", query = "SELECT COUNT(t) FROM TaskEntity t WHERE t.owner.username = :username AND t.state = :state AND t.isActive")
 
 public class TaskEntity implements Serializable{
@@ -64,7 +62,6 @@ public class TaskEntity implements Serializable{
 	@JoinColumn(name="author", nullable = false, unique = false, updatable = true)
 	private UserEntity owner;
 
-	
 	public TaskEntity() {
 		
 	}
@@ -104,7 +101,6 @@ public class TaskEntity implements Serializable{
 	public void setTitle(String title) {
 		this.title = title;
 	}
-
 
 	public String getDescription() {
 		return description;

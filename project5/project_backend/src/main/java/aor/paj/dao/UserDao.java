@@ -24,6 +24,27 @@ public class UserDao extends AbstractDao<UserEntity> {
 		}
 	}
 
+	public List<UserEntity> findUsersByFirstNameStartingWith(String prefix) {
+		try {
+			return em.createNamedQuery("User.findUserByNameStartingWith", UserEntity.class)
+					.setParameter("prefix", prefix + "%")
+					.getResultList();
+		} catch (NoResultException e) {
+			return null;// ou retorna null
+		}
+	}
+
+	public List<UserEntity> findUsersByEmailStartingWith(String prefix) {
+		try {
+			return em.createNamedQuery("User.findUserByEmailStartingWith", UserEntity.class)
+					.setParameter("prefix", prefix + "%")
+					.getResultList();
+		} catch (NoResultException e) {
+			return null;// ou retorna null
+		}
+	}
+
+
 	public UserEntity findUserByUsername(String username) {
 		try {
 			return (UserEntity) em.createNamedQuery("User.findUserByUsername").setParameter("username", username)
@@ -41,13 +62,7 @@ public class UserDao extends AbstractDao<UserEntity> {
 			return null;
 		}
 	}
-	public UserEntity findUserByName(String name){
-		try{
-			return (UserEntity) em.createNamedQuery("User.findUserByName").setParameter("name", name).getResultList();
-		}catch(NoResultException e){
-			return null;
-		}
-	}
+
 
 	public UserEntity findUserByEmail(String email){
 		try{

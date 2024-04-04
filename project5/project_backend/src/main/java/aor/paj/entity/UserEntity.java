@@ -13,6 +13,10 @@ import java.util.Set;
 @NamedQuery(name = "User.findAllUsers", query = "SELECT u FROM UserEntity u " )
 @NamedQuery(name="User.findUserByName", query = "SELECT u FROM UserEntity u WHERE u.firstName=:name OR u.lastName = :name")
 @NamedQuery(name="User.findUserByTokenConfirmation", query = "SELECT u FROM UserEntity u WHERE u.tokenConfirmation = :tokenConfirmation")
+@NamedQuery(name="User.findUserByNameStartingWith", query = "SELECT u FROM UserEntity u WHERE LOWER (u.firstName) LIKE LOWER (:prefix) OR LOWER (u.lastName) LIKE LOWER (:prefix)")
+
+@NamedQuery(name="User.findUserByEmailStartingWith", query = "SELECT u FROM UserEntity u WHERE LOWER (u.email) LIKE LOWER (:prefix)")
+
 public class UserEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

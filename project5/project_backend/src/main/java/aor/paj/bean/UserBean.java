@@ -291,6 +291,38 @@ public class UserBean implements Serializable {
     }
 
 
+    public List<User> getUsersByFirstName(String prefix) {
+        List<User> users = new ArrayList<>();
+        List<UserEntity> userEntities = userDao.findUsersByFirstNameStartingWith(prefix);
+
+        if(userEntities != null){
+            for(UserEntity userEntity : userEntities){
+                User user = convertUserEntityToDto(userEntity);
+                if(!user.getUsername().equals("admin")) {
+                    users.add(user);
+                }
+            }
+        }
+
+        return users;
+    }
+
+    public List<User> getUsersByEmail(String prefix){
+        List<User> users = new ArrayList<>();
+        List<UserEntity> userEntities = userDao.findUsersByEmailStartingWith(prefix);
+
+        if(userEntities != null){
+            for(UserEntity userEntity : userEntities){
+                User user = convertUserEntityToDto(userEntity);
+                if(!user.getUsername().equals("admin")) {
+                    users.add(user);
+                }
+            }
+        }
+
+        return users;
+    }
+
     public boolean changePassword(String email, String newPassword){
         UserEntity userEntity = userDao.findUserByEmail(email);
         if(userEntity != null){

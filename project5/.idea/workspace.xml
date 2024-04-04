@@ -11,6 +11,11 @@
   <component name="ChangeListManager">
     <list default="true" id="e170a628-05be-4b72-b134-24716f0fd2d1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/UserBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/UserBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/UserDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/UserDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/TaskEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/TaskEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/UserEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,7 +211,8 @@
       <workItem from="1712137290250" duration="1729000" />
       <workItem from="1712139033585" duration="7978000" />
       <workItem from="1712151336911" duration="6776000" />
-      <workItem from="1712166527905" duration="8007000" />
+      <workItem from="1712166527905" duration="8329000" />
+      <workItem from="1712219837292" duration="10397000" />
     </task>
     <servers />
   </component>
