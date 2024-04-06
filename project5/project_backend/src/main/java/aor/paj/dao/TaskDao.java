@@ -8,6 +8,7 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.NoResultException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Stateless
 public class TaskDao extends AbstractDao<TaskEntity> {
@@ -41,6 +42,16 @@ public class TaskDao extends AbstractDao<TaskEntity> {
 
 	}
 
+	public long countTasksByCategory(String categoryName) {
+		try {
+			return (long) em.createNamedQuery("Task.countTasksByTitle").setParameter("title", categoryName)
+					.getSingleResult();
+
+		} catch (NoResultException e) {
+			return 0;
+		}
+
+	}
 	public ArrayList<TaskEntity> findTasksByCategory(CategoryEntity categoryEntity) {
 		try {
 			ArrayList<TaskEntity> taskEntities = (ArrayList<TaskEntity>) em.createNamedQuery("Task.findTasksByCategory").setParameter("category", categoryEntity).getResultList();
@@ -126,6 +137,26 @@ public class TaskDao extends AbstractDao<TaskEntity> {
 			return count;
 		} catch (Exception ex) {
 			return 0;
+		}
+	}
+
+	public List<CategoryEntity> getCategoriesOrderedByTaskCount(){
+		try {
+			List<CategoryEntity> categoryEntities = em.createNamedQuery("Task.findCategoriesOrderedByTaskCount", CategoryEntity.class)
+					.getResultList();
+			return categoryEntities;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public List<TaskEntity> findCompletedTasks(){
+		try {
+			List<TaskEntity> taskEntities = em.createNamedQuery("Task.findCompletedTasks", TaskEntity.class)
+					.getResultList();
+			return taskEntities;
+		} catch (Exception e) {
+			return null;
 		}
 	}
 }

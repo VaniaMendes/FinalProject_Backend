@@ -394,27 +394,7 @@ public class TaskService {
         return response;
     }
 
-    @GET
-    @Path("/{username}/tasksCountState")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserTasks(@HeaderParam("token") String token, @PathParam("username") String username) {
-        Response response;
 
-        User user = userBean.getUserByUsername(username);
-
-        if (userBean.getUserByToken(token) == null) {
-            response = Response.status(403).entity("Invalid token").build();
-
-        } else if (user != null) {
-            Map <String, Long> totalTasks = taskBean.countTasksByState(username);
-            response = Response.status(200).entity(totalTasks).build();
-
-
-        } else {
-            response = Response.status(400).entity("Failed to retrieve user").build();
-        }
-        return response;
-    }
 }
 
 

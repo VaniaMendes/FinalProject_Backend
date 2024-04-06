@@ -23,6 +23,11 @@ import java.time.LocalDate;
 @NamedQuery(name = "Task.findTasksByCategoryFilter", query = "SELECT t FROM TaskEntity t WHERE t.category.idCategory = :category")
 @NamedQuery(name = "Task.findTotalTasksByUSer", query = "SELECT COUNT(t) FROM TaskEntity t WHERE t.owner.username = :username")
 @NamedQuery(name = "Task.countTasksByStateForUser", query = "SELECT COUNT(t) FROM TaskEntity t WHERE t.owner.username = :username AND t.state = :state AND t.isActive")
+@NamedQuery(name= "Task.findCategoriesOrderedByTaskCount", query = "SELECT t.category FROM TaskEntity t GROUP BY t.category ORDER BY COUNT(t) DESC")
+
+@NamedQuery(name = "Task.findCompletedTasks", query = "SELECT t FROM TaskEntity t WHERE t.state = 'done'")
+
+@NamedQuery(name = "Task.countTasksByTitle", query = "SELECT COUNT(t) FROM TaskEntity t WHERE t.category.title = :title")
 
 public class TaskEntity implements Serializable{
 
@@ -43,7 +48,8 @@ public class TaskEntity implements Serializable{
 
 	@Column(name="endDate", nullable = false, unique = false, updatable = true)
 	private LocalDate endDate;
-
+	@Column(name="conclusionDate", nullable = true, unique = false, updatable = true)
+	private LocalDate conslusionDate;
 	@Column(name="priority", nullable = false, unique = false, updatable = true)
 	private int priority;
 
@@ -149,6 +155,14 @@ public class TaskEntity implements Serializable{
 
 	public void setCategory(CategoryEntity category) {
 		this.category = category;
+	}
+
+	public LocalDate getConslusionDate() {
+		return conslusionDate;
+	}
+
+	public void setConslusionDate(LocalDate conslusionDate) {
+		this.conslusionDate = conslusionDate;
 	}
 }
 	

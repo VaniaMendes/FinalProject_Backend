@@ -73,12 +73,25 @@ public class UserDao extends AbstractDao<UserEntity> {
 		}
 	}
 
+	//Método para devolver uma lista com todos os utilizadores
 	public List<UserEntity> findAllUsers (){
 		try{
 			return em.createNamedQuery("User.findAllUsers", UserEntity.class).getResultList();
 		}catch(NoResultException e){
 			return null;
 		}
+	}
+
+	public int getConfirmedUsersCount() {
+		return em.createNamedQuery("User.confirmedUsers", Long.class)
+				.getSingleResult()
+				.intValue();
+	}
+
+	public int getUnconfirmedUsersCount() {
+		return em.createNamedQuery("User.unconfirmedUsers", Long.class)
+				.getSingleResult()
+				.intValue();
 	}
 
 	public boolean update(UserEntity userEntity) {
@@ -91,6 +104,13 @@ public class UserDao extends AbstractDao<UserEntity> {
 		}
 	}
 
+
+	// Método para buscar o número total de utilizadores
+	public int getTotalUsersCount() {
+		return em.createNamedQuery("User.totalUsers", Long.class)
+				.getSingleResult()
+				.intValue();
+	}
 	public boolean removed(UserEntity userEntity){
 		try{
 			em.remove(userEntity);

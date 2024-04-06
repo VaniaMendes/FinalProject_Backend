@@ -13,6 +13,7 @@ import java.util.Set;
 @NamedQuery(name = "Category.findAllCategories", query = "SELECT u FROM CategoryEntity u")
 @NamedQuery(name = "Category.findCategoryByUser", query = "SELECT u FROM CategoryEntity u WHERE u.owner = :owner")
 
+
 public class CategoryEntity implements Serializable{
 
     private static final long serialVersionUID = 1L;

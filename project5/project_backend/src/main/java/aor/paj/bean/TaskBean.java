@@ -1,5 +1,6 @@
 package aor.paj.bean;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -124,6 +125,12 @@ public class TaskBean {
         if (confirmUser != null) {
             if (taskToUpdate != null) {
                 taskToUpdate.setState(newState);
+                if("done".equals(newState)){
+                    taskToUpdate.setConslusionDate(LocalDate.now());
+                }
+                if("todo".equals(newState) || "doing".equals(newState)){
+                    taskToUpdate.setConslusionDate(null);
+                }
                 taskDao.merge(taskToUpdate);
                 status = true;
             } else {
@@ -368,19 +375,7 @@ public class TaskBean {
         }
     }
 
-    //Devolve o total de tarefas por estado
-        public Map<String, Long> countTasksByState(String username) {
-        UserEntity userEntity = userDao.findUserByUsername(username);
-            Map<String, Long> tasksByState = new HashMap<>();
-            String[] states = {"todo", "doing", "done"}; // Estados possíveis das tarefas
 
-            for (String state : states) {
-                long count = taskDao.countTasksByStateForUser(userEntity, state);
-                tasksByState.put(state, count);
-            }
-
-            return tasksByState;
-        }
     public ArrayList<Task> getFilterTasks(String token, String username, long categoryId) {
         ArrayList<Task> allTasks = new ArrayList<>();
         UserEntity userEntity = userDao.findUserByToken(token);

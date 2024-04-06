@@ -211,4 +211,15 @@ public class CategoryBean {
         return category;
     }
 
+    public Category convertCategoryEntityToDTO(CategoryEntity categoryEntity){
+        Category categoryDTO = new Category();
+
+        categoryDTO.setIdCategory(categoryEntity.getIdCategory());
+        categoryDTO.setTitle(categoryEntity.getTitle());
+        categoryDTO.setDescription(categoryEntity.getDescription());
+        categoryDTO.setAuthor(userBean.convertUserEntityToDtoForTask(categoryEntity.getOwner()));
+
+        return categoryDTO;
+    }
+
 }

@@ -22,10 +22,8 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 
 @Singleton
 public class UserBean implements Serializable {
@@ -92,9 +90,11 @@ public class UserBean implements Serializable {
 
         if(userEntities != null) {
             for (UserEntity userEntity : userEntities) {
-                if (userEntity.getIsActive() && !userEntity.getUsername().equals("admin") && !userEntity.getUsername().equals("deletedUser")) {
-                    User user = convertUserEntityToDto(userEntity);
-                    users.add(user);
+                if(userEntity.getIsConfirmed()) {
+                    if (userEntity.getIsActive() && !userEntity.getUsername().equals("admin") && !userEntity.getUsername().equals("deletedUser")) {
+                        User user = convertUserEntityToDto(userEntity);
+                        users.add(user);
+                    }
                 }
             }
         }
@@ -227,7 +227,12 @@ public class UserBean implements Serializable {
         return u;
     }
 
-   
+   public User getUserByTokenConfirmation(String tokenConfirmation) {
+        UserEntity userEntity = userDao.findUserByTokenConfirmation(tokenConfirmation);
+        User u = null;
+        u = convertUserEntityToDto(userEntity);
+        return u;
+    }
     public User getUserByUsername(String username) {
         UserEntity userEntity = userDao.findUserByUsername(username);
         User u = null;
@@ -298,8 +303,10 @@ public class UserBean implements Serializable {
         if(userEntities != null){
             for(UserEntity userEntity : userEntities){
                 User user = convertUserEntityToDto(userEntity);
-                if(!user.getUsername().equals("admin")) {
-                    users.add(user);
+                if (!user.getUsername().equals("admin") && !user.getUsername().equals("deletedUser")) {
+                    if (user.isConfirmed()) {
+                        users.add(user);
+                    }
                 }
             }
         }
@@ -312,10 +319,12 @@ public class UserBean implements Serializable {
         List<UserEntity> userEntities = userDao.findUsersByEmailStartingWith(prefix);
 
         if(userEntities != null){
-            for(UserEntity userEntity : userEntities){
+            for(UserEntity userEntity : userEntities) {
                 User user = convertUserEntityToDto(userEntity);
-                if(!user.getUsername().equals("admin")) {
-                    users.add(user);
+                if (!user.getUsername().equals("admin") && !user.getUsername().equals("deletedUser")) {
+                    if (user.isConfirmed()) {
+                        users.add(user);
+                    }
                 }
             }
         }
@@ -336,9 +345,12 @@ public class UserBean implements Serializable {
         UserEntity u= userDao.findUserByUsername(user.getUsername());
 
         if (u==null){
-            user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
             //Gerar um token de confirmação
+
             String tokenConfirmation = UUID.randomUUID().toString();
+            user.setPassword(tokenConfirmation);
+            user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
+
             //Guardar o token de confirmação
             user.setTokenConfirmation(tokenConfirmation);
             // Se o user é "admin", definir isConfirmed como true
@@ -348,7 +360,7 @@ public class UserBean implements Serializable {
                 user.setConfirmed(false);
             }
             userDao.persist(convertUserDtotoUserEntity(user));
-            sendConfirmationEmail("vsgm13@outlook.pt", tokenConfirmation);
+            sendConfirmationEmail("vsgm13@outlook.pt", tokenConfirmation, user.getUsername());
             return true;
         }else
             return false;
@@ -359,6 +371,11 @@ public class UserBean implements Serializable {
         if (userEntity != null) {
             userEntity.setConfirmed(true);
             userEntity.setTokenConfirmation(null);
+
+
+            // Definir a data de registo para a data atual sem a hora
+            LocalDate now = LocalDate.now();
+            userEntity.setRegisterDate(now);
             userDao.update(userEntity);
             return true;
         }
@@ -383,10 +400,10 @@ public class UserBean implements Serializable {
         emailService.sendEmail(to, subject, body);
     }
 
-    public void sendConfirmationEmail(String to, String token) {
+    public void sendConfirmationEmail(String to, String token, String username) {
         // Enviar email de confirmação
         String subject = "Account Confirmation";
-        String body = "Thank you for registering. Click on the following link to confirm your account: http://localhost:3000/confirmationAccount?token=" + token ;
+        String body = "Thank you for registering.  Your username is: " + username + " .\n Click on the following link to confirm your account: http://localhost:3000/confirmationAccount?token=" + token ;
 
         emailService.sendEmail(to, subject, body);
     }
@@ -398,11 +415,13 @@ public class UserBean implements Serializable {
             UserEntity u = userDao.findUserByUsername(user.getUsername());
 
             if (u == null) {
-                user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
+
                 //Gerar um token de confirmação
                 String tokenConfirmation = UUID.randomUUID().toString();
                 //Guardar o token de confirmação
                 user.setTokenConfirmation(tokenConfirmation);
+                user.setPassword(tokenConfirmation);
+                user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
                 // Se o user é "admin", definir isConfirmed como true para ter acesso à aplicação
                 if (user.getUsername().equals("admin")) {
                     user.setConfirmed(true);
@@ -410,7 +429,7 @@ public class UserBean implements Serializable {
                     user.setConfirmed(false);
                 }
                 userDao.persist(convertUserDtotoUserEntity(user));
-                sendConfirmationEmail("vsgm13@outlook.pt", tokenConfirmation);
+                sendConfirmationEmail("vsgm13@outlook.pt", tokenConfirmation, user.getUsername());
                 return true;
             } else
                 return false;
@@ -423,7 +442,6 @@ public class UserBean implements Serializable {
         boolean status = false;
 
         if (user.getUsername().isEmpty() ||
-                user.getPassword().isEmpty() ||
                 user.getEmail().isEmpty() ||
                 user.getFirstName().isEmpty() ||
                 user.getLastName().isEmpty() ||

@@ -18,6 +18,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.io.StringReader;
+import java.util.Collections;
 import java.util.List;
 
 @Path("/users")
@@ -116,6 +117,22 @@ public class UserService {
         }
     }
 
+    @GET
+    @Path("/userByTokenConfirmation")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getUserByTokenConfirmation (@QueryParam("tokenConfirmation") String tokenConfirmation) {
+
+
+            if (tokenConfirmation != null) {
+                User userFind = userBean.getUserByTokenConfirmation(tokenConfirmation);
+                return Response.ok(userFind).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+        }
+
     //Endpoint para filtrar o nome do user na tabela de users
     @GET
     @Path("/filterByName")
@@ -129,7 +146,8 @@ public class UserService {
                 if (users != null && !users.isEmpty()) {
                     return Response.ok(users).build();
                 } else {
-                    return Response.status(Response.Status.NOT_FOUND).entity("No users found").build();
+                    // Retorna uma array vazia se nenhum usuário for encontrado para que no frontend nao dê erro ao imprimir a tabela
+                    return Response.ok(Collections.emptyList()).build();
                 }
             } else {
                 return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized access").build();
@@ -151,7 +169,8 @@ public class UserService {
                 if (users != null && !users.isEmpty()) {
                     return Response.ok(users).build();
                 } else {
-                    return Response.status(Response.Status.NOT_FOUND).entity("No users found").build();
+                    // Retorna uma array vazia se nenhum email for encontrado para que no frontend nao dê erro ao imprimir a tabela
+                    return Response.ok(Collections.emptyList()).build();
                 }
             } else {
                 return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized access").build();

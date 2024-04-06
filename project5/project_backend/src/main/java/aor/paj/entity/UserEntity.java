@@ -3,6 +3,8 @@ package aor.paj.entity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -16,6 +18,9 @@ import java.util.Set;
 @NamedQuery(name="User.findUserByNameStartingWith", query = "SELECT u FROM UserEntity u WHERE LOWER (u.firstName) LIKE LOWER (:prefix) OR LOWER (u.lastName) LIKE LOWER (:prefix)")
 
 @NamedQuery(name="User.findUserByEmailStartingWith", query = "SELECT u FROM UserEntity u WHERE LOWER (u.email) LIKE LOWER (:prefix)")
+@NamedQuery(name="User.totalUsers" , query = "SELECT COUNT(u) FROM UserEntity u")
+@NamedQuery(name="User.confirmedUsers", query = "SELECT COUNT(u) FROM UserEntity u WHERE u.isConfirmed = true")
+@NamedQuery(name="User.unconfirmedUsers", query = "SELECT COUNT(u) FROM UserEntity u WHERE u.isConfirmed = false")
 
 public class UserEntity implements Serializable {
 
@@ -57,6 +62,9 @@ public class UserEntity implements Serializable {
 	private String typeOfUser;
 	@Column(name = "token_Confirmation", nullable = true, unique = true, updatable = true)
 	private String tokenConfirmation;
+
+	@Column(name = "registerDate", nullable = true, unique = false, updatable = true)
+	private LocalDate registerDate;
 
 
 	@OneToMany(mappedBy = "owner")
@@ -177,6 +185,18 @@ public class UserEntity implements Serializable {
 
 	public void setTokenConfirmation(String tokenConfirmation) {
 		this.tokenConfirmation = tokenConfirmation;
+	}
+
+	public String getTokenConfirmation() {
+		return tokenConfirmation;
+	}
+
+	public LocalDate getRegisterDate() {
+		return registerDate;
+	}
+
+	public void setRegisterDate(LocalDate registerDate) {
+		this.registerDate = registerDate;
 	}
 }
 
