@@ -76,7 +76,6 @@ public class DashboardService {
               dashboardDTO.setAverageTasksPerUser(dashboardBean.getAverageTasksPerUser());
                 dashboardDTO.setCountTasksByState(dashboardBean.countTasksByStateForAllUsers());
 
-
                 dashboardDTO.setMostFrequentCategories(dashboardBean.getCategoriesOrderedByTaskCount());
                 dashboardDTO.setAverageTaskCompletionTime(dashboardBean.getAverageTaskCompletionTime());
                 dashboardDTO.setCountUsersByRegistrationDate(dashboardBean.getUsersRegisteredOverTime());

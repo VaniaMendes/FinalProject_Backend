@@ -128,7 +128,8 @@ public class DashboardBean {
 
             }
         }
-        return totalCompletionTime/count;
+        // Verificar se count não é zero antes de realizar a divisão
+        return count != 0 ? (double) totalCompletionTime / count : 0;
     }
 
 

@@ -1,10 +1,7 @@
 package aor.paj.bean;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import aor.paj.dao.CategoryDao;
 import aor.paj.dao.TaskDao;
@@ -41,6 +38,7 @@ public class TaskBean {
         UserEntity userEntity = userDao.findUserByToken(token);
 
         CategoryEntity categoryEntity = categoryDao.findCategoryById(Long.parseLong(categoryId));
+
 
         if(userEntity != null){
             TaskEntity taskEntity = convertTaskToTaskEntity(task);
@@ -128,7 +126,7 @@ public class TaskBean {
                 if("done".equals(newState)){
                     taskToUpdate.setConslusionDate(LocalDate.now());
                 }
-                if("todo".equals(newState) || "doing".equals(newState)){
+                if("toDo".equals(newState) || "doing".equals(newState)){
                     taskToUpdate.setConslusionDate(null);
                 }
                 taskDao.merge(taskToUpdate);
@@ -431,5 +429,7 @@ public class TaskBean {
             }
         return tasksByUsername;
     }
+
+
 
 }

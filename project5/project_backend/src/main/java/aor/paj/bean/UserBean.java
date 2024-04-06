@@ -313,7 +313,13 @@ public class UserBean implements Serializable {
 
         return users;
     }
-
+public void setTokenNull(String token){
+        UserEntity userEntity = userDao.findUserByToken(token);
+        if(userEntity != null){
+            userEntity.setToken(null);
+            userDao.update(userEntity);
+        }
+}
     public List<User> getUsersByEmail(String prefix){
         List<User> users = new ArrayList<>();
         List<UserEntity> userEntities = userDao.findUsersByEmailStartingWith(prefix);

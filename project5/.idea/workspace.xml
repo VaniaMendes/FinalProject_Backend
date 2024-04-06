@@ -10,23 +10,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e170a628-05be-4b72-b134-24716f0fd2d1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/DashboardBean.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/DashboardDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/DashboardService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/SessionTimeoutFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_backend/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/CategoryBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/CategoryBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/DashboardBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/DashboardBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/StartupBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/StartupBean.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TaskBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TaskBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/UserBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/UserBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/CategoryDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/CategoryDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/TaskDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/TaskDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/UserDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/UserDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/CategoryEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/CategoryEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/TaskEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/TaskEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/UserEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/TaskService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/DashboardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/DashboardService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -228,7 +218,8 @@
       <workItem from="1712306143403" duration="7395000" />
       <workItem from="1712324069973" duration="1960000" />
       <workItem from="1712327844977" duration="3030000" />
-      <workItem from="1712396395598" duration="16108000" />
+      <workItem from="1712396395598" duration="16113000" />
+      <workItem from="1712425401803" duration="4468000" />
     </task>
     <servers />
   </component>
