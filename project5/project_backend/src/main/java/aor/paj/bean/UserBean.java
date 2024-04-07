@@ -354,7 +354,7 @@ public void setTokenNull(String token){
             //Gerar um token de confirmação
 
             String tokenConfirmation = UUID.randomUUID().toString();
-            user.setPassword(tokenConfirmation);
+            user.setPassword(generateRandomPassword(8));
             user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
 
             //Guardar o token de confirmação
@@ -372,6 +372,19 @@ public void setTokenNull(String token){
             return false;
     }
 
+
+    public String generateRandomPassword(int length) {
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder(length);
+        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            password.append(CHARACTERS.charAt(randomIndex));
+        }
+
+        return password.toString();
+    }
     public boolean confirmUser(String tokenConfirmation) {
         UserEntity userEntity = userDao.findUserByTokenConfirmation(tokenConfirmation);
         if (userEntity != null) {

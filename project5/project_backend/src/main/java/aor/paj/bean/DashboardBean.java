@@ -65,7 +65,7 @@ public class DashboardBean {
 
     // Método para obter o número total de usuários
     public int getTotalUsersCount() {
-        return userDao.getTotalUsersCount();
+        return userDao.getTotalUsersCount() ;
     }
 
     // Método para obter o número de utilizadores confirmados
@@ -138,8 +138,7 @@ public class DashboardBean {
     public Map<LocalDate, Integer> getUsersRegisteredOverTime() {
         List<UserEntity> users = userDao.findAllUsers();
         Map<LocalDate, Integer> usersRegisteredOverTime = new TreeMap<>();
-        Map<LocalDate, Integer> cumulativeUsersRegisteredOverTime = new LinkedHashMap<>();
-        int cumulativeCount = 0;
+
 
         for (UserEntity user : users) {
             LocalDate registrationDate = user.getRegisterDate();
@@ -148,13 +147,9 @@ public class DashboardBean {
             }
         }
 
-        // Cálculo da contagem cumulativa ao longo do tempo
-        for (Map.Entry<LocalDate, Integer> entry : usersRegisteredOverTime.entrySet()) {
-            cumulativeCount += entry.getValue();
-            cumulativeUsersRegisteredOverTime.put(entry.getKey(), cumulativeCount);
-        }
 
-        return cumulativeUsersRegisteredOverTime;
+
+        return usersRegisteredOverTime;
     }
 
 

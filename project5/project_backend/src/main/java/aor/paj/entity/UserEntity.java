@@ -18,10 +18,9 @@ import java.util.Set;
 @NamedQuery(name="User.findUserByNameStartingWith", query = "SELECT u FROM UserEntity u WHERE LOWER (u.firstName) LIKE LOWER (:prefix) OR LOWER (u.lastName) LIKE LOWER (:prefix)")
 
 @NamedQuery(name="User.findUserByEmailStartingWith", query = "SELECT u FROM UserEntity u WHERE LOWER (u.email) LIKE LOWER (:prefix)")
-@NamedQuery(name="User.totalUsers" , query = "SELECT COUNT(u) FROM UserEntity u")
-@NamedQuery(name="User.confirmedUsers", query = "SELECT COUNT(u) FROM UserEntity u WHERE u.isConfirmed = true")
-@NamedQuery(name="User.unconfirmedUsers", query = "SELECT COUNT(u) FROM UserEntity u WHERE u.isConfirmed = false")
-
+@NamedQuery(name="User.totalUsers" , query = "SELECT COUNT(u) FROM UserEntity u WHERE u.username NOT IN ('admin', 'deletedUser')")
+@NamedQuery(name="User.confirmedUsers", query = "SELECT COUNT(u) FROM UserEntity u WHERE u.isConfirmed = true AND u.username NOT IN ('admin', 'deletedUser')")
+@NamedQuery(name="User.unconfirmedUsers", query = "SELECT COUNT(u) FROM UserEntity u WHERE u.isConfirmed = false AND u.username NOT IN ('admin', 'deletedUser')")
 public class UserEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
