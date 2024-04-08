@@ -439,7 +439,7 @@ public void setTokenNull(String token){
                 String tokenConfirmation = UUID.randomUUID().toString();
                 //Guardar o token de confirmação
                 user.setTokenConfirmation(tokenConfirmation);
-                user.setPassword(tokenConfirmation);
+                user.setPassword(generateRandomPassword(8));
                 user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
                 // Se o user é "admin", definir isConfirmed como true para ter acesso à aplicação
                 if (user.getUsername().equals("admin")) {

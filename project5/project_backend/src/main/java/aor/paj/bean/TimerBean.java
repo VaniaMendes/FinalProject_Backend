@@ -7,7 +7,7 @@ import jakarta.inject.Inject;
 public class TimerBean {
     @Inject
     Notifier notifier;
-    @Schedule(second="*/30", minute="*", hour="*") // this automatic timer is set to expire every 30 seconds
+    @Schedule(second="*/30", minute="*/30", hour="*") // this automatic timer is set to expire every 30 seconds
 
     public void automaticTimer(){
         String msg = "This is just a reminder!";

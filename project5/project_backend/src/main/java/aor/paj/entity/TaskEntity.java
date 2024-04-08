@@ -50,6 +50,9 @@ public class TaskEntity implements Serializable{
 	private LocalDate endDate;
 	@Column(name="conclusionDate", nullable = true, unique = false, updatable = true)
 	private LocalDate conslusionDate;
+
+	@Column(name="startDate", nullable = true, unique = false, updatable = true)
+	private LocalDate startDate;
 	@Column(name="priority", nullable = false, unique = false, updatable = true)
 	private int priority;
 
@@ -163,6 +166,14 @@ public class TaskEntity implements Serializable{
 
 	public void setConslusionDate(LocalDate conslusionDate) {
 		this.conslusionDate = conslusionDate;
+	}
+
+	public LocalDate getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(LocalDate startDate) {
+		this.startDate = startDate;
 	}
 }
 	

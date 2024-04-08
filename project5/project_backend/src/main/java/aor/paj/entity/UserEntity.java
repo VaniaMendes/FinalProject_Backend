@@ -68,6 +68,11 @@ public class UserEntity implements Serializable {
 
 	@OneToMany(mappedBy = "owner")
 	private Set<TaskEntity> tasks;
+	@OneToMany(mappedBy = "sender")
+	private Set<MessageEntity> messagesSent;
+
+	@OneToMany(mappedBy = "receiver")
+	private Set<MessageEntity> messagesReceived;
 
 
 	//default empty constructor
@@ -196,6 +201,22 @@ public class UserEntity implements Serializable {
 
 	public void setRegisterDate(LocalDate registerDate) {
 		this.registerDate = registerDate;
+	}
+
+	public Set<MessageEntity> getMessagesSent() {
+		return messagesSent;
+	}
+
+	public void setMessagesSent(Set<MessageEntity> messagesSent) {
+		this.messagesSent = messagesSent;
+	}
+
+	public Set<MessageEntity> getMessagesReceived() {
+		return messagesReceived;
+	}
+
+	public void setMessagesReceived(Set<MessageEntity> messagesReceived) {
+		this.messagesReceived = messagesReceived;
 	}
 }
 

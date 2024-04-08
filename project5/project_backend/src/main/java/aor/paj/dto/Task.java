@@ -21,6 +21,8 @@ public class Task  {
     @XmlElement
     private LocalDate endDate;
     @XmlElement
+    private LocalDate startDate;
+    @XmlElement
     private LocalDate conclusionDate;
     @XmlElement
     private int priority;
@@ -48,6 +50,7 @@ public class Task  {
         this.category = null;
         this.isActive = true;
         this.conclusionDate = null;
+        this.startDate = null;
     }
 
 
@@ -134,6 +137,14 @@ public class Task  {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
     public LocalDate getConclusionDate() {

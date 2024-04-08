@@ -2,7 +2,6 @@ package aor.paj.bean;
 
 import java.time.LocalDate;
 import java.util.*;
-
 import aor.paj.dao.CategoryDao;
 import aor.paj.dao.TaskDao;
 import aor.paj.dao.UserDao;
@@ -15,6 +14,8 @@ import aor.paj.entity.UserEntity;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
+
+
 
 @Singleton
 public class TaskBean {
@@ -32,13 +33,16 @@ public class TaskBean {
     @Inject
     CategoryBean categoryBean;
 
+
+
     public TaskBean(){
     }
+
+
     public boolean addTask(String token, Task task, String categoryId) {
         UserEntity userEntity = userDao.findUserByToken(token);
 
         CategoryEntity categoryEntity = categoryDao.findCategoryById(Long.parseLong(categoryId));
-
 
         if(userEntity != null){
             TaskEntity taskEntity = convertTaskToTaskEntity(task);
@@ -50,7 +54,7 @@ public class TaskBean {
         return false;
     }
 
-    public boolean isTaskTitleAvailable(Task task) { //No user estou a passar diretamento o username, aqui passo o objeto todo??
+    public boolean isTaskTitleAvailable(Task task) {
 
         TaskEntity taskEntity = taskDao.findTaskByTitle(task.getTitle());
 
@@ -128,6 +132,9 @@ public class TaskBean {
                 }
                 if("toDo".equals(newState) || "doing".equals(newState)){
                     taskToUpdate.setConslusionDate(null);
+                }
+                if("doing".equals(newState)){
+                    taskToUpdate.setStartDate(LocalDate.now());
                 }
                 taskDao.merge(taskToUpdate);
                 status = true;

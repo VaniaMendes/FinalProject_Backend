@@ -120,7 +120,7 @@ public class DashboardBean {
 
         for (TaskEntity task : tasks) {
             if ("done".equals(task.getState()) && task.getConslusionDate() != null) {
-                LocalDate startDate = task.getInitialDate();
+                LocalDate startDate = task.getStartDate();
                 LocalDate endDate = task.getConslusionDate();
                 long daysBetween = Duration.between(startDate.atStartOfDay(), endDate.atStartOfDay()).toDays();
                 totalCompletionTime += daysBetween;
