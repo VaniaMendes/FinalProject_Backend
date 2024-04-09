@@ -277,6 +277,19 @@ public class UserBean implements Serializable {
         return null;
     }
 
+    public User convertUserEntityToDTOforMessage(UserEntity userEntity){
+        if(userEntity != null){
+            User userDto = new User();
+            userDto.setUsername(userEntity.getUsername());
+            userDto.setEmail(userEntity.getEmail());
+            userDto.setFirstName(userEntity.getFirstName());
+            userDto.setLastName(userEntity.getLastName());
+            userDto.setImgURL(userEntity.getImgURL());
+            userDto.setPhoneNumber(userEntity.getPhoneNumber());
+            return userDto;
+        }
+        return null;
+    }
 
     public UserEntity convertUserDtotoUserEntity(User user){
         UserEntity userEntity = new UserEntity();
@@ -403,7 +416,7 @@ public void setTokenNull(String token){
 
     public boolean passwordRecovery(String email){
         UserEntity userEntity = userDao.findUserByEmail(email);
-        if(userEntity != null){
+        if(userEntity != null && userEntity.getIsConfirmed()){
 
             sendPasswordRecoveryEmail("vsgm13@outlook.pt", email);
             return true;

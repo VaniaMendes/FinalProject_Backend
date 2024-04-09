@@ -14,4 +14,6 @@ public class TimerBean {
         System.out.println(msg);
         notifier.send("mytoken",msg);
     }
+
+
 }

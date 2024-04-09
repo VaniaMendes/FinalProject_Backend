@@ -294,10 +294,10 @@ public class TaskBean {
         task.setEndDate(taskEntity.getEndDate());
         task.setPriority(taskEntity.getPriority());
         task.setState(taskEntity.getState());
+        task.setStartDate(taskEntity.getStartDate());
         task.setActive(taskEntity.isActive());
         task.setAuthor(userBean.convertUserEntityToDtoForTask(taskEntity.getOwner()));
         task.setCategory(convertCategoryEntityToCategoryForTask(taskEntity.getCategory()));
-
 
         return task;
     }
@@ -314,6 +314,8 @@ public class TaskBean {
         taskEntity.setActive(task.isActive());
         taskEntity.setState("toDo");
         taskEntity.setPriority(task.getPriority());
+        taskEntity.setStartDate(task.getInitialDate());
+
         return taskEntity;
     }
 

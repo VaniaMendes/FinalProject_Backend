@@ -11,7 +11,8 @@ import java.io.Serializable;
 @NamedQuery(name = "Message.findAllMessages", query = "SELECT m FROM MessageEntity m")
 @NamedQuery(name = "Message.findMessagesByUser", query = "SELECT m FROM MessageEntity m WHERE m.sender = :username OR m.receiver = :username")
 
-@NamedQuery(name = "Message.findMessagesBetweenUsers", query = "SELECT m FROM MessageEntity m WHERE m.sender.username = :username1 AND m.receiver.username = :username1 OR m.sender.username = :username2 AND m.receiver.username = :username2")
+@NamedQuery(name = "Message.findMessagesBetweenUsers", query = "SELECT m FROM MessageEntity m WHERE (m.sender.username = :username1 AND m.receiver.username = :username2) OR (m.sender.username = :username2 AND m.receiver.username = :username1)")
+
 public class MessageEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

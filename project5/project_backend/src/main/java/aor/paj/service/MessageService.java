@@ -30,6 +30,11 @@ public class MessageService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMessagesBetweenUsers(@HeaderParam("token") String token, @PathParam("user2") String username2) {
 
+        User user = userBean.getUserByToken(token);
+
+        if(user == null){
+            return Response.status(Response.Status.UNAUTHORIZED).entity("User not logged in").build();
+        }
 
         List<MessageDto> messages = messageBean.getMessagesBetweenUsers(token, username2);
 
@@ -50,6 +55,9 @@ public class MessageService {
 
         if(user == null){
             return response = Response.status(Response.Status.UNAUTHORIZED).entity("User not logged in").build();
+        }
+        if(messageDto == null){
+            return response = Response.status(Response.Status.BAD_REQUEST).entity("Message not found").build();
         }
 
         boolean messageSend = messageBean.sendMessage(token, messageDto);

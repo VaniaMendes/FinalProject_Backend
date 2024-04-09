@@ -258,7 +258,7 @@ public class UserService {
     public Response getActiveUsers(@HeaderParam("token") String token) {
 
         User userRequest = userBean.getUserByToken(token);
-        if (userRequest != null && (userRequest.getTypeOfUser().equals("product_owner") || userRequest.getTypeOfUser().equals("scrum_master"))) {
+        if (userRequest != null ) {
             List<User> activeUsers = userBean.getActiveUsers();
 
             if (activeUsers != null && !activeUsers.isEmpty()) {

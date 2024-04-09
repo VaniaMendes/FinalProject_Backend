@@ -6,6 +6,7 @@ import aor.paj.dto.MessageDto;
 import aor.paj.dto.User;
 import aor.paj.entity.MessageEntity;
 import aor.paj.entity.UserEntity;
+import aor.paj.websocket.Notifier;
 import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
 
@@ -22,7 +23,11 @@ public class MessageBean {
     @Inject
     MessageDao messageDao;
     @Inject
+    UserBean userBean;
+    @Inject
     UserDao userDao;
+    @Inject
+    Notifier notifier;
 
     public MessageBean(){
 
@@ -35,26 +40,23 @@ public class MessageBean {
         List<MessageEntity> messageEntities = messageDao.findMessagesBetweenUsers(userEntity1, userEntity2);
 
         List<MessageDto> messageDtos = new ArrayList<>();
-        if (messageEntities != null) {
+        if (messageEntities != null && !messageEntities.isEmpty()) {
             for (MessageEntity messageEntity : messageEntities) {
                 MessageDto messageDto = new MessageDto();
                 messageDto.setId(messageEntity.getId());
                 messageDto.setContent(messageEntity.getContent());
-
-                User sender = new User();
-                sender.setUsername(messageEntity.getSender().getUsername());
-                messageDto.setSender(sender);
-
-                User receiver = new User();
-                receiver.setUsername(messageEntity.getReceiver().getUsername());
-                messageDto.setReceiver(receiver);
+                messageDto.setSender(userBean.convertUserEntityToDTOforMessage(messageEntity.getSender()));
+                messageDto.setReceiver(userBean.convertUserEntityToDTOforMessage(messageEntity.getReceiver()));
 
                 messageDto.setRead(messageEntity.isRead());
-                messageDto.setTimestamp(LocalDate.now());
+                messageDto.setTimestamp(LocalDate.parse(messageEntity.getTimestamp(), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
-                messageDtos.sort(Comparator.comparing(MessageDto::getTimestamp).reversed());
+
+                messageDtos.add(messageDto);
             }
+            messageDtos.sort(Comparator.comparing(MessageDto::getId));
         }
+
 
         return messageDtos;
     }
@@ -77,7 +79,7 @@ public class MessageBean {
         messageEntity.setReceiver(receiver);
         messageEntity.setRead(false);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime dateTime = LocalDateTime.now();
         messageEntity.setTimestamp(dateTime.format(formatter));
 
