@@ -34,7 +34,7 @@ public class DashboardBean {
     public Map<String, Long> countTasksByState(String username) {
         UserEntity userEntity = userDao.findUserByUsername(username);
         Map<String, Long> tasksByState = new HashMap<>();
-        String[] states = {"todo", "doing", "done"}; // Estados possíveis das tarefas
+        String[] states = {"toDo", "doing", "done"}; // Estados possíveis das tarefas
 
         for (String state : states) {
             long count = taskDao.countTasksByStateForUser(userEntity, state);

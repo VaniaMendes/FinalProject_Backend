@@ -259,7 +259,7 @@ public class UserService {
 
         User userRequest = userBean.getUserByToken(token);
         if (userRequest != null ) {
-            List<User> activeUsers = userBean.getActiveUsers();
+            List<User> activeUsers = userBean.getActiveUsers(token);
 
             if (activeUsers != null && !activeUsers.isEmpty()) {
                 return Response.ok(activeUsers).build();

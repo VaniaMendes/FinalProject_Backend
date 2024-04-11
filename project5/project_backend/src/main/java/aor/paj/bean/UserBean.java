@@ -83,17 +83,23 @@ public class UserBean implements Serializable {
             return users;
     }
 
-    public List<User> getActiveUsers(){
+    public List<User> getActiveUsers(String token){
+
+        UserEntity userRequest = userDao.findUserByToken(token);
 
         List<User> users = new ArrayList<>();
         List<UserEntity> userEntities = userDao.findAllUsers();
 
         if(userEntities != null) {
             for (UserEntity userEntity : userEntities) {
+
+                //Só vou buscar users confirmados e que não sejam o próprio user que está a fazer o pedido
                 if(userEntity.getIsConfirmed()) {
                     if (userEntity.getIsActive() && !userEntity.getUsername().equals("admin") && !userEntity.getUsername().equals("deletedUser")) {
-                        User user = convertUserEntityToDto(userEntity);
-                        users.add(user);
+                        if (!userEntity.getUsername().equals(userRequest.getUsername())) {
+                            User user = convertUserEntityToDto(userEntity);
+                            users.add(user);
+                        }
                     }
                 }
             }
@@ -317,7 +323,7 @@ public class UserBean implements Serializable {
             for(UserEntity userEntity : userEntities){
                 User user = convertUserEntityToDto(userEntity);
                 if (!user.getUsername().equals("admin") && !user.getUsername().equals("deletedUser")) {
-                    if (user.isConfirmed()) {
+                    if (user.isConfirmed() && user.isActive()) {
                         users.add(user);
                     }
                 }

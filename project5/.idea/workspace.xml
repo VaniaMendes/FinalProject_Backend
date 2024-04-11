@@ -10,13 +10,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e170a628-05be-4b72-b134-24716f0fd2d1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/project_backend/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/MessageBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/MessageBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TaskBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TaskBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/DashboardBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/DashboardBean.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TimerBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TimerBean.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/UserBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/UserBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/MessageEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/MessageEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/MessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/MessageService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -228,7 +226,11 @@
       <workItem from="1712507677523" duration="9989000" />
       <workItem from="1712567544911" duration="4136000" />
       <workItem from="1712573445549" duration="14612000" />
-      <workItem from="1712652099813" duration="14771000" />
+      <workItem from="1712652099813" duration="14948000" />
+      <workItem from="1712751142343" duration="24000" />
+      <workItem from="1712774039393" duration="256000" />
+      <workItem from="1712824856049" duration="8332000" />
+      <workItem from="1712842471596" duration="1302000" />
     </task>
     <servers />
   </component>
