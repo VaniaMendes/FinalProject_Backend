@@ -7,6 +7,10 @@ import aor.paj.dto.MessageDto;
 import aor.paj.dto.User;
 import aor.paj.entity.MessageEntity;
 import aor.paj.entity.UserEntity;
+import aor.paj.websocket.LocalDateTimeAdapter;
+import aor.paj.websocket.WebSocketMessage;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
 import jakarta.mail.Message;
@@ -14,16 +18,18 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Path("/messages")
 public class MessageService {
-    @Inject
-    private MessageDao messageDao;
+   
     @Inject
     MessageBean messageBean;
     @Inject
     UserBean userBean;
+    @Inject
+    WebSocketMessage webSocketMessage;
 
     @GET
     @Path("/{user2}")
@@ -60,10 +66,13 @@ public class MessageService {
             return response = Response.status(Response.Status.BAD_REQUEST).entity("Message not found").build();
         }
 
+
+        //Criação de uma nova mensagem e guardada na base de dados
         boolean messageSend = messageBean.sendMessage(token, messageDto);
-        System.out.println(messageSend);
+
 
         if (messageSend) {
+
             return response = Response.ok().entity("Message sented").build();
 
         } else {

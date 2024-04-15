@@ -6,11 +6,13 @@ import aor.paj.dao.CategoryDao;
 import aor.paj.dao.TaskDao;
 import aor.paj.dao.UserDao;
 import aor.paj.dto.Category;
+import aor.paj.dto.NotificationDto;
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import aor.paj.entity.CategoryEntity;
 import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
+import aor.paj.websocket.Notifier;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
@@ -32,6 +34,10 @@ public class TaskBean {
     UserBean userBean;
     @Inject
     CategoryBean categoryBean;
+    @Inject
+    Notifier notifier;
+    @Inject
+    NotificationBean notificationBean;
 
 
 
@@ -49,6 +55,9 @@ public class TaskBean {
             taskEntity.setOwner(userEntity);
             taskEntity.setCategory(categoryEntity);
             taskDao.persist(taskEntity);
+            String message = "A new task was added to the ScrumBoard by " + userEntity.getUsername();
+            notifier.sendToAll(message);
+            notificationBean.createNotification(message, userEntity.getUsername());
             return true;
         }
         return false;

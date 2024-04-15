@@ -26,7 +26,7 @@ public class CategoryBean {
     @EJB
     CategoryDao categoryDao;
 
-    @Inject
+    @EJB
     UserBean userBean;
 
     public CategoryBean(){

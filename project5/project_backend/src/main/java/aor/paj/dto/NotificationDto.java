@@ -1,39 +1,36 @@
 package aor.paj.dto;
 
-
+import aor.paj.entity.UserEntity;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Date;
 
 @XmlRootElement
-public class MessageDto {
+public class NotificationDto {
+
 
     @XmlElement
     private long id;
     @XmlElement
     private String content;
     @XmlElement
-    private User sender;
-    @XmlElement
-    private User receiver;
+    private UserEntity receiver;
 
-    private LocalDateTime timestamp;
+    @XmlElement
+    private LocalDate timestamp;
     @XmlElement
     private boolean read;
 
-    public MessageDto() {
+    public NotificationDto() {
 
         this.id = new Date().getTime();
         this.content = null;
-        this.sender = null;
         this.receiver = null;
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = LocalDate.now();
         this.read = false;
     }
-
 
     public long getId() {
         return id;
@@ -51,27 +48,11 @@ public class MessageDto {
         this.content = content;
     }
 
-    public User getSender() {
-        return sender;
-    }
-
-    public void setSender(User sender) {
-        this.sender = sender;
-    }
-
-    public User getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(User receiver) {
-        this.receiver = receiver;
-    }
-
-    public LocalDateTime getTimestamp() {
+    public LocalDate getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(LocalDate timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -81,5 +62,13 @@ public class MessageDto {
 
     public void setRead(boolean read) {
         this.read = read;
+    }
+
+    public UserEntity getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(UserEntity receiver) {
+        this.receiver = receiver;
     }
 }

@@ -10,7 +10,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e170a628-05be-4b72-b134-24716f0fd2d1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/NotificationBean.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/NotificationDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/NotificationDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/NotificationEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/utils/SessionTimeOut.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/utils/WebListenner.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/LocalDateTimeAdapter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/WebSocketMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/CategoryBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/CategoryBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/DashboardBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/DashboardBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/MessageBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/MessageBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TaskBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TaskBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TimerBean.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/UserBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/UserBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/MessageDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/MessageDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/MessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/MessageService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/Notifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/Notifier.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/webapp/WEB-INF/web.xml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,6 +75,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="aor.paj.websocket" />
       <recent name="aor.paj.bean" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -226,7 +247,14 @@
       <workItem from="1712774039393" duration="256000" />
       <workItem from="1712824856049" duration="8332000" />
       <workItem from="1712842471596" duration="1905000" />
-      <workItem from="1712857337438" duration="645000" />
+      <workItem from="1712857337438" duration="852000" />
+      <workItem from="1712910900905" duration="6849000" />
+      <workItem from="1712934697581" duration="6246000" />
+      <workItem from="1713003814071" duration="9386000" />
+      <workItem from="1713024728969" duration="9003000" />
+      <workItem from="1713096527406" duration="5564000" />
+      <workItem from="1713111511220" duration="12705000" />
+      <workItem from="1713172602452" duration="20346000" />
     </task>
     <servers />
   </component>

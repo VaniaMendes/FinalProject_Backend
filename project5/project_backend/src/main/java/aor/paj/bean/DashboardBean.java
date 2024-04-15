@@ -23,11 +23,7 @@ public class DashboardBean {
     UserDao userDao;
     @EJB
     TaskDao taskDao;
-    @EJB
-    CategoryBean categoryBean;
 
-    @EJB
-    CategoryDao categoryDao;
 
 
     //Devolve o total de tarefas por estado

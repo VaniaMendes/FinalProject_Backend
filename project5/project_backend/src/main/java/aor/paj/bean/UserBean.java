@@ -258,6 +258,7 @@ public class UserBean implements Serializable {
     public User convertUserEntityToDto(UserEntity userEntity) {
         if(userEntity != null) {
             User userDto = new User();
+            userDto.setToken(userEntity.getToken());
             userDto.setUsername(userEntity.getUsername());
             userDto.setPassword(userEntity.getPassword());
             userDto.setEmail(userEntity.getEmail());
@@ -292,6 +293,7 @@ public class UserBean implements Serializable {
             userDto.setLastName(userEntity.getLastName());
             userDto.setImgURL(userEntity.getImgURL());
             userDto.setPhoneNumber(userEntity.getPhoneNumber());
+            userDto.setToken(userEntity.getToken());
             return userDto;
         }
         return null;
