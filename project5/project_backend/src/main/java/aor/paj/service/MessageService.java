@@ -79,4 +79,25 @@ public class MessageService {
             return response = Response.status(Response.Status.BAD_REQUEST).entity("Message could not be sent").build();
         }
     }
+
+    @PUT
+    @Path("/read/{id}")
+    @Consumes (MediaType.APPLICATION_JSON)
+    public Response markMessageAsRead(@HeaderParam("token") String token, @PathParam("id") Long id, @QueryParam("username") String username) {
+        User user = userBean.getUserByToken(token);
+        Response response;
+
+        if (user == null) {
+            return response = Response.status(Response.Status.UNAUTHORIZED).entity("User not logged in").build();
+        }
+
+        boolean messageRead = messageBean.markMessagesAsRead(token,id, username);
+
+
+        if (messageRead) {
+            return response = Response.ok().entity("Message marked as read").build();
+        } else {
+            return response = Response.status(Response.Status.BAD_REQUEST).entity("Message could not be marked as read").build();
+        }
+    }
 }

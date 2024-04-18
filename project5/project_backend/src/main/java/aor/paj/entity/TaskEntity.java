@@ -1,12 +1,10 @@
 package aor.paj.entity;
 
-import aor.paj.dto.Category;
 import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="task")

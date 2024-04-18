@@ -1,5 +1,4 @@
 package aor.paj.bean;
-import aor.paj.websocket.LocalDateTimeAdapter;
 import aor.paj.websocket.WebSocketMessage;
 
 
@@ -9,8 +8,6 @@ import aor.paj.dto.MessageDto;
 import aor.paj.entity.MessageEntity;
 import aor.paj.entity.UserEntity;
 import aor.paj.websocket.Notifier;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
 
@@ -59,7 +56,7 @@ public class MessageBean {
                 messageDto.setSender(userBean.convertUserEntityToDTOforMessage(messageEntity.getSender()));
                 messageDto.setReceiver(userBean.convertUserEntityToDTOforMessage(messageEntity.getReceiver()));
 
-                messageDto.setRead(messageEntity.isRead());
+                messageDto.setMessageRead(messageEntity.isMessageRead());
                 // Converter a String do timestamp para LocalDateTime
                 LocalDateTime timestamp = LocalDateTime.parse(messageEntity.getTimestamp(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
                 messageDto.setTimestamp(timestamp);
@@ -90,9 +87,9 @@ public class MessageBean {
         messageEntity.setContent(messageDto.getContent());
         messageEntity.setSender(sender);
         messageEntity.setReceiver(receiver);
-        messageEntity.setRead(false);
+        messageEntity.setMessageRead(false);
 
-        // Converter LocalDate para LocalDateTime e formatar como string
+        // Converter LocalDateTime converter para String
         LocalDateTime timestamp = messageDto.getTimestamp();
         String formattedTimestamp = timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         messageEntity.setTimestamp(formattedTimestamp);
@@ -122,13 +119,48 @@ public class MessageBean {
         }
     }
 
+
+    public boolean markMessagesAsRead(String token, long id, String username) {
+        UserEntity receiver = userDao.findUserByToken(token);
+        UserEntity sender = userDao.findUserByUsername(username);
+
+        List<MessageEntity> messageEntities = messageDao.findMessagesUnReadBetweenUsers(receiver, sender);
+        System.out.println("Mensagens não lidas: " + messageEntities.size());
+
+        boolean atLeastOneMessageRead = false;
+        for (MessageEntity messageEntity : messageEntities) {
+            if (messageEntity.getId() <= id) {
+                if (messageEntity.getSender().equals(sender)) {
+                    if (updateSenderMessage(messageEntity)) {
+                        atLeastOneMessageRead = true;
+                    }
+                }
+            }
+        }
+
+        return atLeastOneMessageRead;
+    }
+
+
+    public boolean updateSenderMessage(MessageEntity messageEntity) {
+
+        if (messageEntity == null) {
+            return false;
+        } else {
+            messageEntity.setMessageRead(true);
+            return messageDao.updateMessage(messageEntity);
+        }
+    }
+
+
+
         public MessageDto convertMessageEntityToDto(MessageEntity messageEntity) {
             MessageDto messageDto = new MessageDto();
             messageDto.setId(messageEntity.getId());
             messageDto.setContent(messageEntity.getContent());
             messageDto.setSender(userBean.convertUserEntityToDTOforMessage(messageEntity.getSender()));
             messageDto.setReceiver(userBean.convertUserEntityToDTOforMessage(messageEntity.getReceiver()));
-            messageDto.setRead(messageEntity.isRead());
+            messageDto.setMessageRead(messageEntity.isMessageRead());
             // Converter a String do timestamp para LocalDateTime
             LocalDateTime timestamp = LocalDateTime.parse(messageEntity.getTimestamp(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
             messageDto.setTimestamp(timestamp);

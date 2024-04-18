@@ -13,6 +13,10 @@ import aor.paj.entity.CategoryEntity;
 import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
 import aor.paj.websocket.Notifier;
+import aor.paj.websocket.WebSocketTask;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
@@ -38,6 +42,8 @@ public class TaskBean {
     Notifier notifier;
     @Inject
     NotificationBean notificationBean;
+    @Inject
+    WebSocketTask webSocketTask;
 
 
 
@@ -63,28 +69,8 @@ public class TaskBean {
         return false;
     }
 
-    public boolean isTaskTitleAvailable(Task task) {
 
-        TaskEntity taskEntity = taskDao.findTaskByTitle(task.getTitle());
 
-        return taskEntity == null;
-    }
-
-    public boolean isTaskTitleAvailableToUpdate(String token, String taskId) {
-
-        UserEntity userEntity = userDao.findUserByToken(token);
-        TaskEntity taskEntity = taskDao.findTaskByTitle(taskId);
-
-        if (userEntity != null) {
-            if (taskEntity != null) {
-                return taskEntity.getOwner().equals(userEntity);
-            } else {
-                return true;
-            }
-        } else {
-            return false;
-        }
-    }
 
     public boolean updateTask(String token, String taskId, Task task, String categoryId) {
 
@@ -111,6 +97,17 @@ public class TaskBean {
                         taskToUpdate.setCategory(newCategory);
 
                         taskDao.merge(taskToUpdate);
+
+                        // Enviar a mensagem para o WebSocket
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.registerModule(new JavaTimeModule());
+
+                        try {
+                            String jsonMsg = mapper.writeValueAsString(convertTaskEntityToTask(taskToUpdate));
+                            webSocketTask.toDoOnMessage(jsonMsg);
+                        } catch (Exception e) {
+                            System.out.println("Erro ao serializar a mensagem: " + e.getMessage());
+                        }
                         status = true;
                     } else {
                         status = false;

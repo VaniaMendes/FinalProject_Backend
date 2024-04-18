@@ -10,27 +10,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e170a628-05be-4b72-b134-24716f0fd2d1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/NotificationBean.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/NotificationDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/NotificationDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/NotificationEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/utils/SessionTimeOut.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/utils/WebListenner.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/LocalDateTimeAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/WebSocketMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/NotificationService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/WebSocketTask.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_backend/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/CategoryBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/CategoryBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/DashboardBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/DashboardBean.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/MessageBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/MessageBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/NotificationBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/NotificationBean.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TaskBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TaskBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TimerBean.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/UserBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/UserBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/MessageDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/MessageDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/NotificationDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/NotificationDao.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/MessageDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/MessageDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/NotificationDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/NotificationDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/MessageEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/MessageEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/NotificationEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/NotificationEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/TaskEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/entity/TaskEntity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/MessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/MessageService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/TaskService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/utils/SessionTimeOut.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/utils/SessionTimeOut.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/utils/WebListenner.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/utils/WebListenner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/Notifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/Notifier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/webapp/WEB-INF/web.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/WebSocketMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/WebSocketMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/test/java/aor/paj/bean/TaskBeanTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/test/java/aor/paj/bean/TaskBeanTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,6 +85,8 @@
       <recent name="C:\AoR\finalProject\FinalProject_backend\FinalProject_Backend\project5\project_backend\src\main\resources\META-INF" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="aor.paj.utils" />
+      <recent name="" />
       <recent name="aor.paj.bean" />
     </key>
   </component>
@@ -254,11 +259,28 @@
       <workItem from="1713024728969" duration="9003000" />
       <workItem from="1713096527406" duration="5564000" />
       <workItem from="1713111511220" duration="12705000" />
-      <workItem from="1713172602452" duration="20346000" />
+      <workItem from="1713172602452" duration="20832000" />
+      <workItem from="1713210634315" duration="4965000" />
+      <workItem from="1713256730204" duration="18953000" />
+      <workItem from="1713297267782" duration="608000" />
+      <workItem from="1713361208840" duration="7771000" />
+      <workItem from="1713378659477" duration="7248000" />
+      <workItem from="1713429392000" duration="10929000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

@@ -50,8 +50,6 @@ public class TaskService {
         } else if (categoryId == null || categoryDao.findCategoryById(Long.parseLong(categoryId)) == null) {
             response = Response.status(422).entity("Invalid category").build();
 
-        } else if (!taskBean.isTaskTitleAvailable(task) || task.getTitle().isEmpty()) {
-            response = Response.status(422).entity("Title's not valid").build();
 
         } else if (task.getInitialDate().isAfter(task.getEndDate())) {
             response = Response.status(422).entity("Initial date cannot be after the end date").build();
@@ -89,8 +87,6 @@ public class TaskService {
         } else if (categoryDao.findCategoryById(Long.parseLong(categoryId)) == null) {
             response = Response.status(422).entity("Invalid category").build();
 
-        } else if (!taskBean.isTaskTitleAvailableToUpdate(token, taskId)) {
-            response = Response.status(422).entity("Title not available").build();
 
         } else if (task.getInitialDate().isAfter(task.getEndDate())) {
             response = Response.status(422).entity("Initial date cannot be after the end date").build();

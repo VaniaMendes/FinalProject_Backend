@@ -1,31 +1,26 @@
 package aor.paj.utils;
-
-import jakarta.inject.Inject;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import jakarta.ws.rs.POST;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
 
 @Path("/session")
 public class SessionTimeOut {
+    @GET
+    public Response getSessionTimeOut(@Context HttpServletRequest request)
+    {
 
-    @Inject
-    private ServletContext servletContext;
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            // The session has been invalidated due to inactivity. Redirect to logout.
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Session has expired. Please log in again.").build();
+        }
 
-    @Inject
-    private HttpServletRequest request;
+        // Your method logic here...
 
-
-
-    @POST
-    @Path("/timeout")
-    public void sessionTimeOut(@QueryParam("timeout") int timeout) {
-        HttpSession session = request.getSession();
-        session.setMaxInactiveInterval(timeout * 60); // Convertendo minutos para segundos
-
-        // Se necessário, você pode também configurar o tempo limite da sessão no contexto da aplicação
-        servletContext.setSessionTimeout(timeout * 60); // Convertendo minutos para segundos
+        return Response.ok().build();
     }
 }
+

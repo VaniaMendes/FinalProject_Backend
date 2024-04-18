@@ -6,6 +6,7 @@ import aor.paj.dto.MessageDto;
 import aor.paj.dto.User;
 import aor.paj.entity.UserEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
@@ -65,13 +66,18 @@ public class WebSocketMessage {
     public void toDoOnMessage(String msg) {
 
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
         JavaTimeModule module = new JavaTimeModule();
         module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
         mapper.registerModule(module);
 
         try {
             MessageDto message = mapper.readValue(msg, MessageDto.class);
+            mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
             module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
             mapper.registerModule(module);
             System.out.println(message);
 
@@ -107,7 +113,7 @@ public class WebSocketMessage {
                     senderSession.getBasicRemote().sendObject(msg);
 
                     //só envia notificação se receiver não estiver no chat
-                    String messagetoSend = "You received a new message from  " + senderUser.getUsername();
+                    String messagetoSend = "You received a new message from  " + senderUser.getUsername() + "    Please Click on the link: http://localhost:3000/profile/" + senderUser.getUsername();
                     notificationBean.createNotification(messagetoSend, receiverUser.getUsername());
                     notifier.send(receiverUser.getToken(), messagetoSend);
                 } catch (IOException e) {

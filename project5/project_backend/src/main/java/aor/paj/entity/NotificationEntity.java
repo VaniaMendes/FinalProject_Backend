@@ -7,10 +7,11 @@ import java.io.Serializable;
 @Entity
 @Table(name = "notification")
 
-@NamedQuery(name = "Notification.findMessageById", query = "SELECT n FROM MessageEntity n WHERE n.id = :messageId")
-@NamedQuery(name = "Notification.findAllMessages", query = "SELECT n FROM MessageEntity n")
-@NamedQuery(name = "Notification.findMessagesByUser", query = "SELECT n FROM MessageEntity n WHERE n.sender = :username OR n.receiver = :username")
-
+@NamedQuery(name = "Notification.findNotificationById", query = "SELECT n FROM MessageEntity n WHERE n.id = :messageId")
+@NamedQuery(name = "Notification.findAllNotifications", query = "SELECT n FROM MessageEntity n")
+@NamedQuery(name = "Notification.findNotificationsByUser", query = "SELECT n FROM NotificationEntity n WHERE n.receiver.username = :username ")
+@NamedQuery(name = "Notification.findAllNotificationsByUserUnRead", query = "SELECT n FROM NotificationEntity n WHERE n.receiver.username=:username AND n.notificationRead = false")
+@NamedQuery(name = "Notification.findUnreadNotificationsByUser", query = "SELECT n FROM NotificationEntity n WHERE n.receiver.username=:username AND n.notificationRead = false")
 
 public class NotificationEntity implements Serializable {
 
@@ -29,7 +30,7 @@ public class NotificationEntity implements Serializable {
 
 
     @Column(name = "isRead", nullable = false, unique = false, updatable = true)
-    private boolean read;
+    private boolean notificationRead;
     @Column(name = "timestamp", nullable = false, unique = false, updatable = true)
     private String timestamp;
 
@@ -52,12 +53,12 @@ public class NotificationEntity implements Serializable {
         this.content = content;
     }
 
-    public boolean isRead() {
-        return read;
+    public boolean isNotificationRead() {
+        return notificationRead;
     }
 
-    public void setRead(boolean read) {
-        this.read = read;
+    public void setNotificationRead(boolean notificationRead) {
+        this.notificationRead = notificationRead;
     }
 
     public String getTimestamp() {

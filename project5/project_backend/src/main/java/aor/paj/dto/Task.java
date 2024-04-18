@@ -2,9 +2,8 @@ package aor.paj.dto;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 

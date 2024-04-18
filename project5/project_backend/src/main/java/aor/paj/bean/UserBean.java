@@ -10,10 +10,13 @@ import aor.paj.entity.CategoryEntity;
 import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
 import aor.paj.utils.EncryptHelper;
+import aor.paj.utils.WebListenner;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -45,6 +48,7 @@ public class UserBean implements Serializable {
 
 
 
+
     public UserBean(){
     }
 
@@ -56,6 +60,8 @@ public class UserBean implements Serializable {
             if (userEntity.getPassword().equals(user.getPassword())){
                 String token = generateNewToken();
                 userEntity.setToken(token);
+                userDao.update(userEntity);
+
                 return token;
             }
         }
@@ -298,6 +304,8 @@ public class UserBean implements Serializable {
         }
         return null;
     }
+
+
 
     public UserEntity convertUserDtotoUserEntity(User user){
         UserEntity userEntity = new UserEntity();

@@ -53,12 +53,29 @@ public class MessageDao extends AbstractDao<MessageEntity>{
             return null;
         }
     }
+    public List<MessageEntity> findMessagesUnReadBetweenUsers(UserEntity user1, UserEntity user2) {
+        try {
+            List<MessageEntity> messageEntities = em.createNamedQuery("Message.findMessagesBetweenUsers").setParameter("username1", user1.getUsername()).setParameter("username2", user2.getUsername()).getResultList();
+            return messageEntities;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     public boolean createMessage(MessageEntity messageEntity) {
         try {
             em.merge(messageEntity);
 
          return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean updateMessage(MessageEntity messageEntity){
+        try {
+            em.merge(messageEntity);
+            return true;
         } catch (Exception e) {
             return false;
         }

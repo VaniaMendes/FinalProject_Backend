@@ -1,10 +1,18 @@
 package aor.paj.websocket;
 
+import aor.paj.dto.MessageDto;
+import aor.paj.dto.Task;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.ejb.Singleton;
 import jakarta.websocket.*;
 import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +37,7 @@ public class Notifier {
     }
 
     public void sendToAll(String msg) {
+
         for (Session session : sessions.values()) {
             try {
                 session.getBasicRemote().sendText(msg);
@@ -65,16 +74,6 @@ public class Notifier {
         }
     }
 
-
-    @OnMessage
-            public void toDoOnMessage (Session session, String msg){
-                System.out.println("A new message is received: " + msg);
-                try {
-                    session.getBasicRemote().sendText("ack");
-                } catch (IOException e) {
-                    System.out.println("Something went wrong!");
-                }
-            }
 
 
 

@@ -72,18 +72,7 @@ class TaskBeanTest {
         assertTrue(result);
     }
 
-    @Test
-    void testIsTaskTitleAvailable() {
-        // Arrange
-        Task task = new Task();
-        task.setTitle("newTitle");
 
-        // Act
-        boolean result = taskBean.isTaskTitleAvailable(task);
-
-        // Assert
-        assertTrue(result);
-    }
 
     @Test
     void testUpdateTask() {

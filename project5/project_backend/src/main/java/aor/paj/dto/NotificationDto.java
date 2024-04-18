@@ -5,6 +5,7 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @XmlRootElement
@@ -16,20 +17,20 @@ public class NotificationDto {
     @XmlElement
     private String content;
     @XmlElement
-    private UserEntity receiver;
+    private User receiver;
 
     @XmlElement
-    private LocalDate timestamp;
+    private LocalDateTime timestamp;
     @XmlElement
-    private boolean read;
+    private boolean notificationRead;
 
     public NotificationDto() {
 
         this.id = new Date().getTime();
         this.content = null;
         this.receiver = null;
-        this.timestamp = LocalDate.now();
-        this.read = false;
+        this.timestamp = LocalDateTime.now();
+        this.notificationRead = false;
     }
 
     public long getId() {
@@ -48,27 +49,27 @@ public class NotificationDto {
         this.content = content;
     }
 
-    public LocalDate getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDate timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 
-    public boolean isRead() {
-        return read;
+    public boolean isNotificationRead() {
+        return notificationRead;
     }
 
-    public void setRead(boolean read) {
-        this.read = read;
+    public void setNotificationRead(boolean notificationRead) {
+        this.notificationRead = notificationRead;
     }
 
-    public UserEntity getReceiver() {
+    public User getReceiver() {
         return receiver;
     }
 
-    public void setReceiver(UserEntity receiver) {
+    public void setReceiver(User receiver) {
         this.receiver = receiver;
     }
 }

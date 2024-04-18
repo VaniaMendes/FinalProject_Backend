@@ -22,7 +22,7 @@ public class MessageDto {
 
     private LocalDateTime timestamp;
     @XmlElement
-    private boolean read;
+    private boolean messageRead;
 
     public MessageDto() {
 
@@ -31,7 +31,7 @@ public class MessageDto {
         this.sender = null;
         this.receiver = null;
         this.timestamp = LocalDateTime.now();
-        this.read = false;
+        this.messageRead = false;
     }
 
 
@@ -75,11 +75,11 @@ public class MessageDto {
         this.timestamp = timestamp;
     }
 
-    public boolean isRead() {
-        return read;
+    public boolean isMessageRead() {
+        return messageRead;
     }
 
-    public void setRead(boolean read) {
-        this.read = read;
+    public void setMessageRead(boolean messageRead) {
+        this.messageRead = messageRead;
     }
 }
