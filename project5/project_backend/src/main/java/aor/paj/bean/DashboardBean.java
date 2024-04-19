@@ -143,8 +143,6 @@ public class DashboardBean {
             }
         }
 
-
-
         return usersRegisteredOverTime;
     }
 

@@ -18,6 +18,8 @@ public class NotificationDto {
     private String content;
     @XmlElement
     private User receiver;
+    @XmlElement
+    private User sender;
 
     @XmlElement
     private LocalDateTime timestamp;
@@ -29,6 +31,7 @@ public class NotificationDto {
         this.id = new Date().getTime();
         this.content = null;
         this.receiver = null;
+        this.sender = null;
         this.timestamp = LocalDateTime.now();
         this.notificationRead = false;
     }
@@ -71,5 +74,13 @@ public class NotificationDto {
 
     public void setReceiver(User receiver) {
         this.receiver = receiver;
+    }
+
+    public User getSender() {
+        return sender;
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
     }
 }

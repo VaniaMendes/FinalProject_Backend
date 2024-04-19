@@ -11,6 +11,9 @@ import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
 import aor.paj.utils.EncryptHelper;
 import aor.paj.utils.WebListenner;
+import aor.paj.websocket.WebSocketTask;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.mail.internet.AddressException;
@@ -45,6 +48,8 @@ public class UserBean implements Serializable {
 
     @EJB
     EmailService emailService;
+    @EJB
+    WebSocketTask webSocketTask;
 
 
 
@@ -396,6 +401,7 @@ public void setTokenNull(String token){
             }
             userDao.persist(convertUserDtotoUserEntity(user));
             sendConfirmationEmail("vsgm13@outlook.pt", tokenConfirmation, user.getUsername());
+
             return true;
         }else
             return false;
@@ -425,6 +431,19 @@ public void setTokenNull(String token){
             LocalDate now = LocalDate.now();
             userEntity.setRegisterDate(now);
             userDao.update(userEntity);
+
+            // Enviar a mensagem para o WebSocket
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+
+
+            try {
+                String jsonMsg = mapper.writeValueAsString(convertUserEntityToDto(userEntity));
+                System.out.println("Serialized message: " + jsonMsg);
+                webSocketTask.toDoOnMessage(jsonMsg);
+            } catch (Exception e) {
+                System.out.println("Erro ao serializar a mensagem: " + e.getMessage());
+            }
             return true;
         }
         return false;

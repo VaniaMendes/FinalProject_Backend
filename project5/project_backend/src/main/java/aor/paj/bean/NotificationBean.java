@@ -28,8 +28,9 @@ public class NotificationBean {
 
     }
 
-    public boolean createNotification(String content, String receiverUsername) {
+    public boolean createNotification(String token, String content, String receiverUsername) {
         UserEntity receiver = userDao.findUserByUsername(receiverUsername);
+        UserEntity sender = userDao.findUserByToken(token);
 
         if (receiver == null) {
             return false;
@@ -38,10 +39,12 @@ public class NotificationBean {
         NotificationDto notificationDto = new NotificationDto();
         notificationDto.setContent(content);
         notificationDto.setReceiver(userBean.convertUserEntityToDTOforMessage(receiver));
+        notificationDto.setSender(userBean.convertUserEntityToDTOforMessage(sender));
         NotificationEntity notificationEntity = new NotificationEntity();
         notificationEntity.setId(notificationDto.getId());
         notificationEntity.setContent(notificationDto.getContent());
         notificationEntity.setReceiver(receiver);
+        notificationEntity.setSender(sender);
         notificationEntity.setNotificationRead(false);
 
         // Converter LocalDate para LocalDateTime e formatar como string
@@ -73,7 +76,8 @@ public class NotificationBean {
                 NotificationDto notificationDto = new NotificationDto();
                 notificationDto.setId(notificationEntity.getId());
                 notificationDto.setContent(notificationEntity.getContent());
-
+                notificationDto.setReceiver(userBean.convertUserEntityToDTOforMessage(notificationEntity.getReceiver()));
+                notificationDto.setSender(userBean.convertUserEntityToDTOforMessage(notificationEntity.getSender()));
                 LocalDateTime timestamp = LocalDateTime.parse(notificationEntity.getTimestamp(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
                 notificationDto.setTimestamp(timestamp);
                 notificationDto.setNotificationRead(notificationEntity.isNotificationRead());

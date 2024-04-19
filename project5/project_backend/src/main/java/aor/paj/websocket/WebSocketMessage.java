@@ -81,25 +81,19 @@ public class WebSocketMessage {
             mapper.registerModule(module);
             System.out.println(message);
 
-            String usernameReceptor = message.getReceiver().getUsername();
-            String usernameSender = message.getSender().getUsername();
-            System.out.println(usernameSender);
-            System.out.println(usernameReceptor);
-
-            User receiverUser = userbean.getUserByUsername(usernameReceptor);
-            User senderUser = userbean.getUserByUsername(usernameSender);
+            User receiverUser = message.getReceiver();
+            User senderUser = message.getSender();
 
             String tokenReceiver = (receiverUser).getToken();
-            System.out.println(tokenReceiver);
             String tokenSender = (senderUser).getToken();
-            System.out.println(tokenSender);
 
             Session receiverSession = sessions.get(tokenReceiver);
             Session senderSession = sessions.get(tokenSender);
             System.out.println("A new message is received: " + message.getContent());
-            if (receiverSession != null && senderSession != null) {
+            if (receiverSession != null && senderSession != null){
                 System.out.println("Message sent to both sender and receiver");
                 try {
+
                     receiverSession.getBasicRemote().sendObject(msg);
                     senderSession.getBasicRemote().sendObject(msg);
                     System.out.println("Message sent to both sender and receiver");
@@ -113,8 +107,8 @@ public class WebSocketMessage {
                     senderSession.getBasicRemote().sendObject(msg);
 
                     //só envia notificação se receiver não estiver no chat
-                    String messagetoSend = "You received a new message from  " + senderUser.getUsername() + "    Please Click on the link: http://localhost:3000/profile/" + senderUser.getUsername();
-                    notificationBean.createNotification(messagetoSend, receiverUser.getUsername());
+                    String messagetoSend = "You received a new message from  " + senderUser.getUsername();
+                    notificationBean.createNotification(tokenSender, messagetoSend, receiverUser.getUsername());
                     notifier.send(receiverUser.getToken(), messagetoSend);
                 } catch (IOException e) {
                     System.out.println("Something went wrong!");
