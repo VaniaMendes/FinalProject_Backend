@@ -7,9 +7,12 @@ import aor.paj.dto.Category;
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import aor.paj.entity.TaskEntity;
+import aor.paj.utils.WebListenner;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -33,7 +36,11 @@ public class TaskService {
     @Inject
     CategoryDao categoryDao;
 
-    //getter das tasks
+
+    @Inject
+    WebListenner webListenner;
+    @Inject
+    HttpServletRequest httpRequest;
 
     @POST
     @Path("/createTask")
@@ -69,6 +76,11 @@ public class TaskService {
         } else {
             response = Response.status(400).entity("Failed to update task").build();
         }
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
 
         return response;
     }
@@ -103,6 +115,11 @@ public class TaskService {
         } else
             response = Response.status(400).entity("Failed to update task").build();
 
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
         return response;
     }
 
@@ -126,6 +143,11 @@ public class TaskService {
 
         } else {
             response = Response.status(400).entity("Task category update failed").build();
+        }
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
         }
         return response;
     }
@@ -151,6 +173,11 @@ public class TaskService {
         } else
             response = Response.status(400).entity("Failed to update task state").build();
 
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
         return response;
     }
 
@@ -182,6 +209,11 @@ public class TaskService {
         } else
             response = Response.status(400).entity("Failed to update task active state").build();
 
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
         return response;
     }
 
@@ -206,7 +238,11 @@ public class TaskService {
             response = Response.status(400).entity("Failed to retrieve tasks").build();
         }
 
-
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
         return response;
     }
 
@@ -227,6 +263,11 @@ public class TaskService {
 
         } else {
             response = Response.status(400).entity("Failed to execute order").build();
+        }
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
         }
 
         return response;
@@ -249,6 +290,11 @@ public class TaskService {
 
         } else {
             response = Response.status(400).entity("Failed to execute order").build();
+        }
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
         }
 
         return response;
@@ -279,6 +325,11 @@ public class TaskService {
         }else {
             return Response.ok(userTasksByCategory).build();
         }
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
         return Response.ok(userTasksByCategory).build();
     }
 
@@ -300,6 +351,11 @@ public class TaskService {
             response = Response.status(400).entity("Failed to retrieve tasks").build();
         }
 
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
         return response;
     }
 
@@ -321,6 +377,11 @@ public class TaskService {
             response = Response.status(400).entity("Failed to retrieve tasks").build();
         }
 
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
         return response;
     }
 
@@ -344,6 +405,11 @@ public class TaskService {
         } else {
             response = Response.status(400).entity("This user has no tasks").build();
         }
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
         return response;
     }
 
@@ -364,6 +430,11 @@ public class TaskService {
 
         } else {
             response = Response.status(400).entity("Failed to retrieve task").build();
+        }
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
         }
         return response;
     }
@@ -386,6 +457,11 @@ public class TaskService {
 
         } else {
             response = Response.status(400).entity("Failed to retrieve user").build();
+        }
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
         }
         return response;
     }

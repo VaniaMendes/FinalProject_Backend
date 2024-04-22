@@ -7,6 +7,7 @@ import aor.paj.dto.MessageDto;
 import aor.paj.dto.User;
 import aor.paj.entity.MessageEntity;
 import aor.paj.entity.UserEntity;
+import aor.paj.utils.WebListenner;
 import aor.paj.websocket.LocalDateTimeAdapter;
 import aor.paj.websocket.WebSocketMessage;
 import com.google.gson.Gson;
@@ -14,6 +15,8 @@ import com.google.gson.GsonBuilder;
 import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
 import jakarta.mail.Message;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -30,6 +33,10 @@ public class MessageService {
     UserBean userBean;
     @Inject
     WebSocketMessage webSocketMessage;
+    @Inject
+    WebListenner webListenner;
+    @Inject
+    HttpServletRequest httpRequest;
 
     @GET
     @Path("/{user2}")
@@ -48,6 +55,11 @@ public class MessageService {
             return Response.status(Response.Status.NOT_FOUND).entity("No messages found between these users").build();
         }
 
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
         return Response.ok(messages).build();
     }
 
@@ -73,6 +85,11 @@ public class MessageService {
 
         if (messageSend) {
 
+            //Atualiza a última atividade da sessão
+            HttpSession session = httpRequest.getSession(false);
+            if (session != null) {
+                webListenner.updateLastActivityTime(session);
+            }
             return response = Response.ok().entity("Message sented").build();
 
         } else {
@@ -95,7 +112,13 @@ public class MessageService {
 
 
         if (messageRead) {
+            //Atualiza a última atividade da sessão
+            HttpSession session = httpRequest.getSession(false);
+            if (session != null) {
+                webListenner.updateLastActivityTime(session);
+            }
             return response = Response.ok().entity("Message marked as read").build();
+
         } else {
             return response = Response.status(Response.Status.BAD_REQUEST).entity("Message could not be marked as read").build();
         }

@@ -17,9 +17,7 @@ public class SessionTimeOut {
             // The session has been invalidated due to inactivity. Redirect to logout.
             return Response.status(Response.Status.UNAUTHORIZED).entity("Session has expired. Please log in again.").build();
         }
-
-        // Your method logic here...
-
+        
         return Response.ok().build();
     }
 }

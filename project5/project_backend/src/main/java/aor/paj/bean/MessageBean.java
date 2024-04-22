@@ -18,6 +18,9 @@ import java.util.Comparator;
 import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 
 @Singleton
@@ -33,8 +36,9 @@ public class MessageBean {
     Notifier notifier;
     @Inject
     WebSocketMessage webSocketMessage;
-    @Inject
-    NotificationBean notificationBean;
+
+
+    private static final Logger logger = LogManager.getLogger(TaskBean.class);
 
 
     public MessageBean(){
@@ -96,7 +100,9 @@ public class MessageBean {
 
         try {
             messageDao.createMessage(messageEntity);
-            System.out.println("mensagem persistida");
+            logger.info("new message created by " + sender.getUsername() + " to " + receiver.getUsername() + " at " + LocalDateTime.now());
+            logger.debug("mensagem persistida");
+
 
             // Enviar a mensagem para o WebSocket
             ObjectMapper mapper = new ObjectMapper();
@@ -107,10 +113,9 @@ public class MessageBean {
                 System.out.println("Serialized message: " + jsonMsg);
                 webSocketMessage.toDoOnMessage(jsonMsg);
             } catch (Exception e) {
-                System.out.println("Erro ao serializar a mensagem: " + e.getMessage());
+                logger.error("Erro ao serializar a mensagem: " + e.getMessage());
             }
 
-            System.out.println("mensagem enviada");
 
             return true;
         } catch (Exception e) {
@@ -125,7 +130,7 @@ public class MessageBean {
         UserEntity sender = userDao.findUserByUsername(username);
 
         List<MessageEntity> messageEntities = messageDao.findMessagesUnReadBetweenUsers(receiver, sender);
-        System.out.println("Mensagens não lidas: " + messageEntities.size());
+        logger.debug("Mensagens não lidas: " + messageEntities.size());
 
         boolean atLeastOneMessageRead = false;
         for (MessageEntity messageEntity : messageEntities) {

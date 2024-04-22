@@ -8,14 +8,12 @@ import java.util.*;
 import aor.paj.dao.CategoryDao;
 import aor.paj.dao.TaskDao;
 import aor.paj.dao.UserDao;
-import aor.paj.dto.Category;
-import aor.paj.dto.NotificationDto;
-import aor.paj.dto.Task;
-import aor.paj.dto.User;
+import aor.paj.dto.*;
 import aor.paj.entity.CategoryEntity;
 import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
 import aor.paj.websocket.Notifier;
+import aor.paj.websocket.WebSocketDashboard;
 import aor.paj.websocket.WebSocketTask;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +21,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.*;
 
 
 @Singleton
@@ -47,8 +46,12 @@ public class TaskBean {
     NotificationBean notificationBean;
     @Inject
     WebSocketTask webSocketTask;
+    @Inject
+    WebSocketDashboard webSocketDashboard;
+    @Inject
+    DashboardBean dashboardBean;
 
-
+    private static final Logger logger = LogManager.getLogger(TaskBean.class);
 
     public TaskBean(){
     }
@@ -63,7 +66,30 @@ public class TaskBean {
             TaskEntity taskEntity = convertTaskToTaskEntity(task);
             taskEntity.setOwner(userEntity);
             taskEntity.setCategory(categoryEntity);
-            taskDao.persist(taskEntity);
+            try {
+                taskDao.persist(taskEntity);
+                logger.info("Task added: " + taskEntity.getTitle() + "by: " + userEntity.getUsername() + "at: " + LocalDateTime.now());
+                // Enviar a mensagem para o WebSocket
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.registerModule(new JavaTimeModule());
+                DashboardDTO dashboardDTO = dashboardBean.createDashboardData();
+
+                try {
+                    String jsonMsg = mapper.writeValueAsString(convertTaskEntityToTask(taskEntity));
+                    String dashboard = mapper.writeValueAsString(dashboardDTO);
+                    System.out.println("DashboardDTO: " + dashboard);
+                    logger.debug("Serialized message: " + jsonMsg);
+                    webSocketTask.toDoOnMessage(jsonMsg);
+                    webSocketDashboard.toDoOnMessage(dashboard);
+                } catch (Exception e) {
+                    logger.error("Erro ao serializar a mensagem: " + e.getMessage());
+                }
+
+            } catch (Exception e) {
+                logger.error("Error while adding task: " + e.getMessage());
+
+            }
+
 
             return true;
         }
@@ -89,6 +115,7 @@ public class TaskBean {
                     if (confirmUser.getTypeOfUser().equals("developer") && taskToUpdate.getOwner().equals(confirmUser)
                             || confirmUser.getTypeOfUser().equals("scrum_master")
                             || confirmUser.getTypeOfUser().equals("product_owner")) {
+                        logger.info("User has permission to edit the task.");
 
                         taskToUpdate.setTitle(task.getTitle());
                         taskToUpdate.setDescription(task.getDescription());
@@ -98,7 +125,7 @@ public class TaskBean {
                         taskToUpdate.setCategory(newCategory);
 
                         taskDao.merge(taskToUpdate);
-
+                        logger.info("Task updated with id: " + taskToUpdate.getId() + ",  by: " + confirmUser.getUsername() + "  at: " + LocalDateTime.now());
 
                         // Enviar a mensagem para o WebSocket
                         ObjectMapper mapper = new ObjectMapper();
@@ -107,10 +134,11 @@ public class TaskBean {
 
                         try {
                             String jsonMsg = mapper.writeValueAsString(convertTaskEntityToTask(taskToUpdate));
-                            System.out.println("Serialized message: " + jsonMsg);
+                            logger.debug("Serialized message: " + jsonMsg);
                             webSocketTask.toDoOnMessage(jsonMsg);
+                            logger.info("Task sent to Websocket successfully.");
                         } catch (Exception e) {
-                            System.out.println("Erro ao serializar a mensagem: " + e.getMessage());
+                            logger.error("Erro ao serializar a mensagem: " + e.getMessage());
                         }
                         status = true;
                     } else {
@@ -123,6 +151,7 @@ public class TaskBean {
                 status = false;
             }
         } else {
+
             status = false;
         }
         return status;
@@ -148,18 +177,22 @@ public class TaskBean {
                     taskToUpdate.setStartDate(LocalDate.now());
                 }
                 taskDao.merge(taskToUpdate);
+                logger.info("Task state updated with id: " + taskToUpdate.getId() + ",  by: " + confirmUser.getUsername() + "  at: " + LocalDateTime.now());
 
                 // Enviar a mensagem para o WebSocket
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.registerModule(new JavaTimeModule());
-
+                DashboardDTO dashboardDTO = dashboardBean.createDashboardData();
 
                 try {
                     String jsonMsg = mapper.writeValueAsString(convertTaskEntityToTask(taskToUpdate));
-                    System.out.println("Serialized message: " + jsonMsg);
+                    String dashboard = mapper.writeValueAsString(dashboardDTO);
+                    System.out.println("DashboardDTO: " + dashboard);
+                    logger.debug("Serialized message: " + jsonMsg);
                     webSocketTask.toDoOnMessage(jsonMsg);
+                    webSocketDashboard.toDoOnMessage(dashboard);
                 } catch (Exception e) {
-                    System.out.println("Erro ao serializar a mensagem: " + e.getMessage());
+                    logger.error("Erro ao serializar a mensagem: " + e.getMessage());
                 }
                 status = true;
             } else {
@@ -183,6 +216,7 @@ public class TaskBean {
                 if (newCategory != null) {
                     taskToUpdate.setCategory(convertCategoryToCategoryEntity(category));
                     taskDao.merge(taskToUpdate);
+                    logger.info("Task category updated with title: " + taskToUpdate.getTitle() + ",  by: " + confirmUser.getUsername() + "  at: " + LocalDateTime.now());
                     status = true;
                 } else {
                     status = false;
@@ -236,6 +270,7 @@ public class TaskBean {
             if (tasksToDelete != null) {
                 for (TaskEntity taskEntity : tasksToDelete) {
                     taskEntity.setActive(false);
+                    logger.info("Tasks deleted of user " + confirmUser.getUsername() + "  at: " + LocalDateTime.now());
                 }
                 status = true;
             } else {
@@ -257,6 +292,7 @@ public class TaskBean {
         if (confirmUser != null) {
             if (taskToDelete != null) {
                 taskDao.remove(taskToDelete);
+                logger.info("Task deleted with id: " + taskToDelete.getId() + ",  by: " + confirmUser.getUsername() + "  at: " + LocalDateTime.now());
                 status = true;
             } else {
                 status = false;
@@ -279,6 +315,7 @@ public class TaskBean {
             for (TaskEntity taskEntity : softDeletedTasksEntities) {
                 Task task = convertTaskEntityToTask(taskEntity);
                 softDeletedTasks.add(task);
+
             }
         }
 

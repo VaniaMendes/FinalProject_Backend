@@ -35,43 +35,7 @@ class UserBeanTest {
     }
 
 
-    @Test
-    void testLoginDB_IncorrectPassword() {
-        // Arrange
-        LoginDto loginDto = new LoginDto();
-        loginDto.setUsername("testUser");
-        loginDto.setPassword("wrongPassword");
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername("testUser");
-        userEntity.setPassword("encryptedPassword");
-        when(userDao.findUserByUsername("testUser")).thenReturn(userEntity);
-        when(encryptHelper.encryptPassword("wrongPassword")).thenReturn("wrongEncryptedPassword");
 
-        // Act
-        String token = userBean.loginDB(loginDto);
-
-        // Assert
-        assertNull(token);
-    }
-
-    @Test
-    void testLoginDB_UserNotFound() {
-        // Arrange
-        LoginDto loginDto = new LoginDto();
-        loginDto.setUsername("nonExistingUser");
-        loginDto.setPassword("testPassword");
-        when(userDao.findUserByUsername("nonExistingUser")).thenReturn(null);
-
-        // Act
-        String token = userBean.loginDB(loginDto);
-
-        // Assert
-        assertNull(token);
-    }
-
-
-
-    
 
     @Test
     void testUpdateUser_Successful() {

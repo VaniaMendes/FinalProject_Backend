@@ -6,25 +6,30 @@ import aor.paj.bean.TaskBean;
 import aor.paj.bean.UserBean;
 import aor.paj.dto.Category;
 import aor.paj.dto.Task;
+import aor.paj.utils.WebListenner;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 
 @Path("/categories")
 public class CategoryService {
 
-    @Inject
-    TaskBean taskBean;
 
     @Inject
     UserBean userBean;
 
     @Inject
     CategoryBean categoryBean;
+    @Inject
+    WebListenner webListenner;
+    @Inject
+    HttpServletRequest httpRequest;
 
 
     @POST
@@ -51,6 +56,9 @@ public class CategoryService {
             response = Response.status(403).entity("Invalid Token").build();
         }
 
+        // Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(true);
+        webListenner.updateLastActivityTime(session);
         return response;
     }
 
@@ -80,6 +88,9 @@ public class CategoryService {
             response = Response.status(400).entity("Failed to update category").build();
 
 
+        // Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(true);
+        webListenner.updateLastActivityTime(session);
 
         return response;
     }
@@ -107,6 +118,11 @@ public class CategoryService {
             response = Response.status(400).entity("Failed to delete category").build();
         }
 
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
         return response;
     }
 
@@ -126,6 +142,11 @@ public class CategoryService {
             response = Response.status(200).entity(categoryBean.getAllCategories(token)).build();
         }
 
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
         return response;
     }
 
@@ -148,6 +169,11 @@ public class CategoryService {
             response = Response.status(200).entity(categoryBean.getCategoryById(token, id)).build();
         }
 
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
         return response;
     }
 
@@ -169,6 +195,11 @@ public class CategoryService {
             response = Response.status(200).entity(categoryBean.getCategoryIdByTitle(token, title)).build();
         }
 
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
         return response;
     }
 

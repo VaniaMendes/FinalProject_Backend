@@ -9,11 +9,15 @@ import aor.paj.dto.UserDetails;
 
 import aor.paj.entity.UserEntity;
 import aor.paj.utils.EncryptHelper;
+import aor.paj.utils.WebListenner;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -32,6 +36,10 @@ public class UserService {
 
     @Inject
     EncryptHelper encryptHelper;
+    @Inject
+    WebListenner webListenner;
+    @Inject
+    HttpServletRequest httpRequest;
 
 
     @POST
@@ -71,6 +79,11 @@ public class UserService {
             response = Response.status(Response.Status.BAD_REQUEST).entity("Something went wrong").build(); //status code 400
 
         }
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
 
         return response;
     }
@@ -79,20 +92,29 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getUserByToken(@HeaderParam("token") String token) {
+
+        Response response;
         if (token != null) {
 
             User user = userBean.getUserByToken(token);
 
             if (user != null) {
-                return Response.ok(user).build();
+                response = Response.ok(user).build();
             } else {
 
-                return Response.status(Response.Status.NOT_FOUND).build();
+                response = Response.status(Response.Status.NOT_FOUND).build();
             }
         } else {
 
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            response= Response.status(Response.Status.BAD_REQUEST).build();
         }
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
+        return response;
+
     }
 
     @GET
@@ -100,21 +122,29 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getUserByToken(@HeaderParam("token") String token, @HeaderParam("username") String username) {
+        Response response;
+
         if (token != null) {
 
             User user = userBean.getUserByToken(token);
 
             if (user != null) {
                 User userFind = userBean.getUserByUsername(username);
-                return Response.ok(userFind).build();
+                response = Response.ok(userFind).build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
+                response = Response.status(Response.Status.NOT_FOUND).build();
             }
 
         } else {
 
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            response = Response.status(Response.Status.BAD_REQUEST).build();
         }
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
+        return response;
     }
 
     @GET
@@ -122,15 +152,21 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getUserByTokenConfirmation (@QueryParam("tokenConfirmation") String tokenConfirmation) {
-
+            Response response;
 
             if (tokenConfirmation != null) {
                 User userFind = userBean.getUserByTokenConfirmation(tokenConfirmation);
-                return Response.ok(userFind).build();
+                response = Response.ok(userFind).build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
+                response = Response.status(Response.Status.NOT_FOUND).build();
             }
 
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
+            return response;
         }
 
     //Endpoint para filtrar o nome do user na tabela de users
@@ -280,7 +316,7 @@ public class UserService {
 
         User userRequest = userBean.getUserByToken(token);
         if (userRequest != null && (userRequest.getTypeOfUser().equals("product_owner"))) {
-            List<User> inactiveUsers = userBean.getInactiveUsers();
+            List<User> inactiveUsers = userBean.getInactiveUsers(token);
 
             if (inactiveUsers != null && !inactiveUsers.isEmpty()) {
                 return Response.ok(inactiveUsers).build();
@@ -346,9 +382,9 @@ public class UserService {
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(LoginDto user) {
+    public Response login(LoginDto user, @Context HttpServletRequest request) {
 
-        String token = userBean.loginDB(user);
+        String token = userBean.loginDB(user, request);
         if (token != null) {
             // Criar um objeto JSON contendo apenas o token
             JsonObject jsonResponse = Json.createObjectBuilder()

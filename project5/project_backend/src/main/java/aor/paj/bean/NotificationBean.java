@@ -7,12 +7,16 @@ import aor.paj.entity.NotificationEntity;
 import aor.paj.entity.UserEntity;
 import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import org.apache.logging.log4j.*;
+
 
 @Singleton
 public class NotificationBean {
@@ -24,6 +28,7 @@ public class NotificationBean {
     @Inject
     UserBean userBean;
 
+    private static final Logger logger = LogManager.getLogger(TaskBean.class);
     public NotificationBean() {
 
     }
@@ -54,6 +59,7 @@ public class NotificationBean {
 
         try {
             notificationDao.saveNotification(notificationEntity);
+            logger.info("Notification created: " + notificationEntity.toString() + " and sended by " + sender.getUsername() + " to " + receiver.getUsername());
             return true;
         } catch (Exception e) {
             System.out.println("Erro ao persistir a notificação: " + e.getMessage());

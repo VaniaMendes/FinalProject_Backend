@@ -1,13 +1,11 @@
 package aor.paj.bean;
 
-import aor.paj.dao.CategoryDao;
 import aor.paj.dao.TaskDao;
 import aor.paj.dao.UserDao;
-import aor.paj.dto.Category;
+import aor.paj.dto.DashboardDTO;
 import aor.paj.entity.CategoryEntity;
 import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
-import aor.paj.service.DashboardService;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 
@@ -165,5 +163,23 @@ public class DashboardBean {
         }
 
         return cumulativeTasksConclusionOverTime;
+    }
+
+    public DashboardDTO createDashboardData (){
+
+            DashboardDTO dashboardDTO = new DashboardDTO();
+            dashboardDTO.setTotalUsers(getTotalUsersCount());
+            dashboardDTO.setConfirmedUsers(getConfirmedUsersCount());
+            dashboardDTO.setUnconfirmedUsers(getUnconfirmedUsersCount());
+            dashboardDTO.setAverageTasksPerUser(getAverageTasksPerUser());
+            dashboardDTO.setCountTasksByState(countTasksByStateForAllUsers());
+
+            dashboardDTO.setMostFrequentCategories(getCategoriesOrderedByTaskCount());
+            dashboardDTO.setAverageTaskCompletionTime(getAverageTaskCompletionTime());
+            dashboardDTO.setCountUsersByRegistrationDate(getUsersRegisteredOverTime());
+            dashboardDTO.setCountTaksByConclusionDate(getTasksConcludedOverTime());
+
+            return dashboardDTO;
+
     }
 }

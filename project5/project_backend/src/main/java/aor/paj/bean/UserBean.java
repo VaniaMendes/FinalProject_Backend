@@ -3,6 +3,7 @@ package aor.paj.bean;
 import aor.paj.dao.CategoryDao;
 import aor.paj.dao.TaskDao;
 import aor.paj.dao.UserDao;
+import aor.paj.dto.DashboardDTO;
 import aor.paj.dto.LoginDto;
 import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
@@ -11,6 +12,8 @@ import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
 import aor.paj.utils.EncryptHelper;
 import aor.paj.utils.WebListenner;
+import aor.paj.websocket.Notifier;
+import aor.paj.websocket.WebSocketDashboard;
 import aor.paj.websocket.WebSocketTask;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -20,6 +23,8 @@ import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -30,6 +35,9 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.*;
+import org.apache.logging.log4j.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Singleton
 public class UserBean implements Serializable {
@@ -49,16 +57,20 @@ public class UserBean implements Serializable {
     @EJB
     EmailService emailService;
     @EJB
-    WebSocketTask webSocketTask;
+    Notifier notifier;
+    @EJB
+    WebSocketDashboard webSocketDashboard;
+    @EJB
+    DashboardBean dashboardBean;
 
 
-
+    private static final Logger logger = LogManager.getLogger(TaskBean.class);
 
     public UserBean(){
     }
 
 
-    public String loginDB(LoginDto user){
+    public String loginDB(LoginDto user, HttpServletRequest request){
         UserEntity userEntity = userDao.findUserByUsername(user.getUsername());
         user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
         if (userEntity != null && userEntity.getIsActive()){
@@ -66,10 +78,14 @@ public class UserBean implements Serializable {
                 String token = generateNewToken();
                 userEntity.setToken(token);
                 userDao.update(userEntity);
+                logger.info("User " + userEntity.getUsername() + " logged in at " + LocalDate.now());
 
+                HttpSession session = request.getSession(true);
+                session.setAttribute("token", token);
                 return token;
             }
         }
+        logger.warn("User " + user.getUsername() + " failed to login at " + LocalDate.now());
         return null;
     }
 
@@ -110,6 +126,7 @@ public class UserBean implements Serializable {
                         if (!userEntity.getUsername().equals(userRequest.getUsername())) {
                             User user = convertUserEntityToDto(userEntity);
                             users.add(user);
+                            logger.info("User " + userRequest.getUsername() + " requested all active users at " + LocalDate.now());
                         }
                     }
                 }
@@ -121,7 +138,9 @@ public class UserBean implements Serializable {
     }
 
 
-    public List<User> getInactiveUsers(){
+    public List<User> getInactiveUsers(String token){
+
+        UserEntity userRequest = userDao.findUserByToken(token);
 
         List<User> users = new ArrayList<>();
         List<UserEntity> userEntities = userDao.findAllUsers();
@@ -131,6 +150,7 @@ public class UserBean implements Serializable {
                 if (!userEntity.getIsActive() && !userEntity.getUsername().equals("admin") && !userEntity.getUsername().equals("deletedUser")) {
                     User user = convertUserEntityToDto(userEntity);
                     users.add(user);
+                    logger.info("User " + userRequest.getUsername() + " requested all inactive users at " + LocalDate.now());
                 }
             }
         }
@@ -139,13 +159,10 @@ public class UserBean implements Serializable {
 
     }
 
-
-    /**
-     *
-     * @param token
-     * @return return is null if user is not found or token not found
-     */
     public boolean updateUserByPO(String token, String username, User updatedUser) {
+
+        UserEntity userRequest = userDao.findUserByToken(token);
+
         if (token == null || token.isEmpty()) {
             return false;
         }
@@ -176,9 +193,12 @@ public class UserBean implements Serializable {
             userEntity.setTypeOfUser(updatedUser.getTypeOfUser());
 
         }
+        logger.info("Product Owner " + userRequest.getUsername() + " updated user " + userEntity.getUsername() + " at " + LocalDate.now());
         return userDao.update(userEntity);
 
+
     }
+
 
 
     public boolean updateUser(String token, User updatedUser) {
@@ -208,17 +228,12 @@ public class UserBean implements Serializable {
         if (updatedUser.getPassword() != null){
             userEntity.setPassword(updatedUser.getPassword());
     }
+        logger.info("User " + userEntity.getUsername() + " updated his profile at " + LocalDate.now());
             return userDao.update(userEntity);
 
     }
 
 
-    /**
-     * Update ao role do user, só disponivel para users do tipo product owner
-     * @param username
-     * @param newRole
-     * @return
-     */
     public boolean updateUserRole(String username, String newRole) {
         boolean status;
 
@@ -399,9 +414,25 @@ public void setTokenNull(String token){
             } else {
                 user.setConfirmed(false);
             }
+
+            logger.info("User " + user.getUsername() + " registered at " + LocalDate.now());
             userDao.persist(convertUserDtotoUserEntity(user));
             sendConfirmationEmail("vsgm13@outlook.pt", tokenConfirmation, user.getUsername());
 
+
+            // Enviar a mensagem para o WebSocket
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+
+            DashboardDTO dashboardDTO = dashboardBean.createDashboardData();
+
+            try {
+
+                String dashboard = mapper.writeValueAsString(dashboardDTO);
+                webSocketDashboard.toDoOnMessage(dashboard);
+            } catch (Exception e) {
+                logger.error("Erro ao serializar a mensagem: " + e.getMessage());
+            }
             return true;
         }else
             return false;
@@ -422,6 +453,7 @@ public void setTokenNull(String token){
     }
     public boolean confirmUser(String tokenConfirmation) {
         UserEntity userEntity = userDao.findUserByTokenConfirmation(tokenConfirmation);
+
         if (userEntity != null) {
             userEntity.setConfirmed(true);
             userEntity.setTokenConfirmation(null);
@@ -436,14 +468,16 @@ public void setTokenNull(String token){
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
 
+            DashboardDTO dashboardDTO = dashboardBean.createDashboardData();
 
             try {
-                String jsonMsg = mapper.writeValueAsString(convertUserEntityToDto(userEntity));
-                System.out.println("Serialized message: " + jsonMsg);
-                webSocketTask.toDoOnMessage(jsonMsg);
+
+                String dashboard = mapper.writeValueAsString(dashboardDTO);
+                webSocketDashboard.toDoOnMessage(dashboard);
             } catch (Exception e) {
-                System.out.println("Erro ao serializar a mensagem: " + e.getMessage());
+                logger.error("Erro ao serializar a mensagem: " + e.getMessage());
             }
+
             return true;
         }
         return false;
@@ -495,8 +529,26 @@ public void setTokenNull(String token){
                 } else {
                     user.setConfirmed(false);
                 }
+
+
                 userDao.persist(convertUserDtotoUserEntity(user));
                 sendConfirmationEmail("vsgm13@outlook.pt", tokenConfirmation, user.getUsername());
+                logger.info("Product Owner " + userEntityPO.getUsername() + " registered a new user with username: " + user.getUsername() + " at " + LocalDate.now());
+
+                // Enviar a mensagem para o WebSocket
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.registerModule(new JavaTimeModule());
+
+                DashboardDTO dashboardDTO = dashboardBean.createDashboardData();
+
+                try {
+
+                    String dashboard = mapper.writeValueAsString(dashboardDTO);
+                    webSocketDashboard.toDoOnMessage(dashboard);
+                } catch (Exception e) {
+                    logger.error("Erro ao serializar a mensagem: " + e.getMessage());
+                }
+
                 return true;
             } else
                 return false;
@@ -623,6 +675,7 @@ public void setTokenNull(String token){
 
             userEntity.setIsActive(false);
             userDao.remove(userEntity);
+            logger.info("User " + userEntity.getUsername() + " was permanently deleted at " + LocalDate.now());
             wasRemoved = true;
         }
         return wasRemoved;
@@ -632,6 +685,7 @@ public void setTokenNull(String token){
         boolean wasRemovedToken = false;
         if(userEntity != null){
             wasRemovedToken = userDao.removedToken(userEntity);
+            logger.info("User " + userEntity.getUsername() + " logged out at " + LocalDate.now());
         }
 
         return wasRemovedToken;

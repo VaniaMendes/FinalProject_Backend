@@ -93,7 +93,6 @@ public class WebSocketMessage {
             if (receiverSession != null && senderSession != null){
                 System.out.println("Message sent to both sender and receiver");
                 try {
-
                     receiverSession.getBasicRemote().sendObject(msg);
                     senderSession.getBasicRemote().sendObject(msg);
                     System.out.println("Message sent to both sender and receiver");

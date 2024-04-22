@@ -8,7 +8,10 @@ import aor.paj.dto.DashboardDTO;
 import aor.paj.dao.TaskDao;
 import aor.paj.dao.UserDao;
 import aor.paj.dto.User;
+import aor.paj.utils.WebListenner;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
@@ -18,27 +21,23 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.Map;
+import org.apache.logging.log4j.*;
 
 @Path("/dashboard")
 public class DashboardService {
 
-    @Inject
-    CategoryDao categoryDao;
-
-    @Inject
-    UserDao userDao;
-
-    @Inject
-    TaskDao taskDao;
 
     @Inject
     UserBean userBean;
 
     @Inject
-    TaskBean taskBean;
-    @Inject
     DashboardBean dashboardBean;
 
+    @Inject
+    WebListenner webListenner;
+    @Inject
+    HttpServletRequest httpRequest;
+    private static final Logger logger = LogManager.getLogger(TaskBean.class);
 
 
     @GET
@@ -54,9 +53,15 @@ public class DashboardService {
         } else if (user != null) {
 
             Map<String, Long> totalTasks = dashboardBean.countTasksByState(username);
+            logger.info("Tasks by state consulted by user: " + user.getUsername());
             response = Response.status(200).entity(totalTasks).build();
         } else {
             response = Response.status(400).entity("Failed to retrieve user").build();
+        }
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
         }
         return response;
     }
@@ -69,24 +74,21 @@ public class DashboardService {
         User user = userBean.getUserByToken(token);
 
        if(user != null && user.getTypeOfUser().equals("product_owner")){
-           DashboardDTO dashboardDTO = new DashboardDTO();
-           dashboardDTO.setTotalUsers(dashboardBean.getTotalUsersCount());
-              dashboardDTO.setConfirmedUsers(dashboardBean.getConfirmedUsersCount());
-              dashboardDTO.setUnconfirmedUsers(dashboardBean.getUnconfirmedUsersCount());
-              dashboardDTO.setAverageTasksPerUser(dashboardBean.getAverageTasksPerUser());
-                dashboardDTO.setCountTasksByState(dashboardBean.countTasksByStateForAllUsers());
+                DashboardDTO dashboardDTO = dashboardBean.createDashboardData();
 
-                dashboardDTO.setMostFrequentCategories(dashboardBean.getCategoriesOrderedByTaskCount());
-                dashboardDTO.setAverageTaskCompletionTime(dashboardBean.getAverageTaskCompletionTime());
-                dashboardDTO.setCountUsersByRegistrationDate(dashboardBean.getUsersRegisteredOverTime());
-                dashboardDTO.setCountTaksByConclusionDate(dashboardBean.getTasksConcludedOverTime());
+                logger.info("Dashboard consulted by user: " + user.getUsername());
 
                 response = Response.status(200).entity(dashboardDTO).build();
        }else{
               response = Response.status(403).entity("User not authorized").build();
+              logger.error("User not authorized to consult dashboard" + user.getUsername());
        }
 
-
+        //Atualiza a última atividade da sessão
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) {
+            webListenner.updateLastActivityTime(session);
+        }
         return response;
     }
 }

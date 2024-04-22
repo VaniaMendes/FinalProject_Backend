@@ -22,6 +22,8 @@ public class DashboardDTO {
     private Map<LocalDate, Integer> countUsersByRegistrationDate;
     private Map<LocalDate, Integer> countTaksByConclusionDate;
 
+    public DashboardDTO() {
+    }
     public int getTotalUsers() {
         return totalUsers;
     }

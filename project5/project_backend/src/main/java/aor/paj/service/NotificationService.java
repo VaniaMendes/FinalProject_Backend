@@ -6,8 +6,11 @@ import aor.paj.bean.UserBean;
 import aor.paj.dto.NotificationDto;
 import aor.paj.dto.User;
 
+import aor.paj.utils.WebListenner;
 import aor.paj.websocket.WebSocketMessage;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -23,6 +26,10 @@ public class NotificationService {
     UserBean userBean;
     @Inject
     WebSocketMessage webSocketMessage;
+    @Inject
+    WebListenner webListenner;
+    @Inject
+    HttpServletRequest httpRequest;
 
     @GET
     @Path("/all")
@@ -32,6 +39,11 @@ public class NotificationService {
         User user = userBean.getUserByToken(token);
         if(user != null){
             List<NotificationDto> notifications = notificationBean.getNotificationsByToken(token);
+            //Atualiza a última atividade da sessão
+            HttpSession session = httpRequest.getSession(false);
+            if (session != null) {
+                webListenner.updateLastActivityTime(session);
+            }
             return Response.ok(notifications).build();
         } else {
             return Response.status(Response.Status.UNAUTHORIZED).entity("User not logged in").build();
@@ -46,6 +58,11 @@ public class NotificationService {
         User user = userBean.getUserByToken(token);
         if(user != null){
             if(notificationBean.markNotificationAsRead(token)){
+                //Atualiza a última atividade da sessão
+                HttpSession session = httpRequest.getSession(false);
+                if (session != null) {
+                    webListenner.updateLastActivityTime(session);
+                }
                 return Response.ok().build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND).entity("Notification not found").build();
@@ -53,6 +70,7 @@ public class NotificationService {
         } else {
             return Response.status(Response.Status.UNAUTHORIZED).entity("User not logged in").build();
         }
+
     }
 
     @GET
@@ -63,6 +81,11 @@ public class NotificationService {
         User user = userBean.getUserByToken(token);
         if(user != null){
             List<NotificationDto> notifications = notificationBean.getUnreadNotificationsByToken(token);
+            //Atualiza a última atividade da sessão
+            HttpSession session = httpRequest.getSession(false);
+            if (session != null) {
+                webListenner.updateLastActivityTime(session);
+            }
             return Response.ok(notifications).build();
         } else {
             return Response.status(Response.Status.UNAUTHORIZED).entity("User not logged in").build();
