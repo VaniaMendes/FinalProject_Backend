@@ -10,30 +10,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e170a628-05be-4b72-b134-24716f0fd2d1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/WebSocketDashboard.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project_backend/src/main/webapp/WEB-INF/jboss-deployment-structure.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/DashboardBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/DashboardBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/MessageBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/MessageBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/NotificationBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/NotificationBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/EmailService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TaskBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TaskBean.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/UserBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/UserBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/DashboardDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dto/DashboardDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/CategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/CategoryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/DashboardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/DashboardService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/MessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/MessageService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/NotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/NotificationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/UserDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/UserDao.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/TaskService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/utils/SessionTimeOut.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/utils/SessionTimeOut.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/utils/WebListenner.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/utils/WebListenner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/Notifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/Notifier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/WebSocketMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/WebSocketMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/resources/log4j2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/resources/log4j2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/webapp/WEB-INF/jboss-web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/webapp/WEB-INF/jboss-web.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/WebSocketDashboard.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/WebSocketDashboard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/webapp/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/test/java/aor/paj/bean/UserBeanTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/test/java/aor/paj/bean/UserBeanTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -273,7 +259,9 @@
       <workItem from="1713550554297" duration="5340000" />
       <workItem from="1713609944476" duration="11219000" />
       <workItem from="1713693507885" duration="16339000" />
-      <workItem from="1713779277426" duration="8122000" />
+      <workItem from="1713779277426" duration="8282000" />
+      <workItem from="1713792995770" duration="7551000" />
+      <workItem from="1713861813062" duration="10345000" />
     </task>
     <servers />
   </component>

@@ -40,8 +40,6 @@ public class WebSocketDashboard {
     @OnClose
     public void toDoOnClose(Session session, CloseReason closeReason) {
         System.out.println("Sessão fechada com CloseCode: " + closeReason.getCloseCode() + ": " + closeReason.getReasonPhrase());
-
-        // Cria uma nova lista para evitar a ConcurrentModificationException
         List<String> sessionIdsToRemove = new ArrayList<>();
 
         for (Map.Entry<String, Session> entry : sessions.entrySet()) {
@@ -97,8 +95,6 @@ public class WebSocketDashboard {
         } catch (Exception e) {
             System.out.println("Erro ao desserializar a mensagem: " + e.getMessage());
         }
-
     }
-
 
 }

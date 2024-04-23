@@ -126,12 +126,13 @@ public class UserBean implements Serializable {
                         if (!userEntity.getUsername().equals(userRequest.getUsername())) {
                             User user = convertUserEntityToDto(userEntity);
                             users.add(user);
-                            logger.info("User " + userRequest.getUsername() + " requested all active users at " + LocalDate.now());
+
                         }
                     }
                 }
             }
         }
+        logger.info("User " + userRequest.getUsername() + " requested all active users at " + LocalDate.now());
 
         return users;
 
@@ -150,11 +151,12 @@ public class UserBean implements Serializable {
                 if (!userEntity.getIsActive() && !userEntity.getUsername().equals("admin") && !userEntity.getUsername().equals("deletedUser")) {
                     User user = convertUserEntityToDto(userEntity);
                     users.add(user);
-                    logger.info("User " + userRequest.getUsername() + " requested all inactive users at " + LocalDate.now());
+
                 }
             }
         }
 
+        logger.info("User " + userRequest.getUsername() + " requested all inactive users at " + LocalDate.now());
         return users;
 
     }

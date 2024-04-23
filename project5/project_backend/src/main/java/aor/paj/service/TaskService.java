@@ -6,23 +6,18 @@ import aor.paj.dao.CategoryDao;
 import aor.paj.dto.Category;
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
-import aor.paj.entity.TaskEntity;
 import aor.paj.utils.WebListenner;
 import jakarta.inject.Inject;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import java.io.StringReader;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 
 @Path("/tasks")
 public class TaskService {
@@ -181,14 +176,7 @@ public class TaskService {
         return response;
     }
 
-    /**
-     * Editar atributo isActive da task (soft delete), permite ao scrum master só colocar
-     * para falso, enquanto ao owner pode mudar para false ou true, o developer não deixa
-     * fazer nada
-     * @param token
-     * @param taskId
-     * @return
-     */
+
     @PUT
     @Path("/{taskId}/softDelete")
     @Produces(MediaType.APPLICATION_JSON)
@@ -394,21 +382,25 @@ public class TaskService {
 
         User user = userBean.getUserByToken(token);
 
-        ArrayList<Task> tasks = taskBean.getTasksByUsername(token);
-
-        if (userBean.getUserByToken(token) == null) {
+        if(user == null){
             response = Response.status(403).entity("Invalid token").build();
+        }else {
+            ArrayList<Task> tasks = taskBean.getTasksByUsername(token);
 
-        } else if (tasks != null) {
-            response = Response.status(200).entity(tasks).build();
+            if (userBean.getUserByToken(token) == null) {
+                response = Response.status(403).entity("Invalid token").build();
 
-        } else {
-            response = Response.status(400).entity("This user has no tasks").build();
-        }
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
+            } else if (tasks != null) {
+                response = Response.status(200).entity(tasks).build();
+
+            } else {
+                response = Response.status(400).entity("This user has no tasks").build();
+            }
+            //Atualiza a última atividade da sessão
+            HttpSession session = httpRequest.getSession(false);
+            if (session != null) {
+                webListenner.updateLastActivityTime(session);
+            }
         }
         return response;
     }
@@ -453,7 +445,6 @@ public class TaskService {
         } else if (user != null) {
                 long totalTasks = taskBean.getTotalTasksByUsername(username);
                 response = Response.status(200).entity(totalTasks).build();
-
 
         } else {
             response = Response.status(400).entity("Failed to retrieve user").build();

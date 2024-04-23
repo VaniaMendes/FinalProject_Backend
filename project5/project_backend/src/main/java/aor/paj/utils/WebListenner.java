@@ -11,13 +11,12 @@ import jakarta.servlet.http.HttpSessionListener;
 @WebListener
 public class WebListenner implements HttpSessionListener {
 
-
     @Inject
     UserBean userBean;
     @Override
     public void sessionCreated(HttpSessionEvent se) {
         //Define o tempo de x minutos (em segundos)
-        se.getSession().setMaxInactiveInterval(5 * 60);
+        se.getSession().setMaxInactiveInterval(20 * 60);
         System.out.println("Tempo de sessão iniciado");
 
         // Define o atributo de marca de tempo de última atividade

@@ -246,8 +246,22 @@ public class TaskBean {
                     taskToUpdate.setActive(true);
                 }
 
-
                 taskDao.merge(taskToUpdate);
+                // Enviar a mensagem para o WebSocket
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.registerModule(new JavaTimeModule());
+                DashboardDTO dashboardDTO = dashboardBean.createDashboardData();
+
+                try {
+                    String jsonMsg = mapper.writeValueAsString(convertTaskEntityToTask(taskToUpdate));
+                    String dashboard = mapper.writeValueAsString(dashboardDTO);
+                    System.out.println("DashboardDTO: " + dashboard);
+                    logger.debug("Serialized message: " + jsonMsg);
+                    webSocketTask.toDoOnMessage(jsonMsg);
+                    webSocketDashboard.toDoOnMessage(dashboard);
+                } catch (Exception e) {
+                    logger.error("Erro ao serializar a mensagem: " + e.getMessage());
+                }
 
 
                 status = true;
@@ -315,7 +329,6 @@ public class TaskBean {
             for (TaskEntity taskEntity : softDeletedTasksEntities) {
                 Task task = convertTaskEntityToTask(taskEntity);
                 softDeletedTasks.add(task);
-
             }
         }
 

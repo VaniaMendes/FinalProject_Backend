@@ -30,7 +30,7 @@ public class UserDao extends AbstractDao<UserEntity> {
 					.setParameter("prefix", prefix + "%")
 					.getResultList();
 		} catch (NoResultException e) {
-			return null;// ou retorna null
+			return null;
 		}
 	}
 

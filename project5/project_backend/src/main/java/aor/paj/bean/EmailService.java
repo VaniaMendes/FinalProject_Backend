@@ -12,7 +12,7 @@ public class EmailService {
 
     // Configurações para acesso ao servidor de e-mail
     private final String username = "vsgm13@outlook.pt";
-    private final String password = "vaNiaSo13";
+    private final String password = "vaNiaSo1986";
 
     @Resource(name = "mail/session")
     private Session session;

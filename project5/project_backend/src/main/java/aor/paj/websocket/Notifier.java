@@ -71,8 +71,6 @@ public class Notifier {
     }
 
 
-
-
     @OnError
     public void onError(Session session, Throwable throwable) {
         System.out.println("Error in session " + session.getId() + ": " + throwable.getMessage());
