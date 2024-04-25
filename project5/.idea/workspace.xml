@@ -11,15 +11,7 @@
   <component name="ChangeListManager">
     <list default="true" id="e170a628-05be-4b72-b134-24716f0fd2d1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/EmailService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TaskBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/TaskBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/UserBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/bean/UserBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/UserDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/dao/UserDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/service/TaskService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/utils/WebListenner.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/utils/WebListenner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/Notifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/Notifier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/WebSocketDashboard.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/java/aor/paj/websocket/WebSocketDashboard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_backend/src/main/webapp/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/project_backend/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -262,6 +254,10 @@
       <workItem from="1713779277426" duration="8282000" />
       <workItem from="1713792995770" duration="7551000" />
       <workItem from="1713861813062" duration="10345000" />
+      <workItem from="1713947815727" duration="1253000" />
+      <workItem from="1713969343578" duration="695000" />
+      <workItem from="1713992662739" duration="701000" />
+      <workItem from="1714045705773" duration="2022000" />
     </task>
     <servers />
   </component>

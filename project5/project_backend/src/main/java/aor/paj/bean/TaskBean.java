@@ -263,7 +263,6 @@ public class TaskBean {
                     logger.error("Erro ao serializar a mensagem: " + e.getMessage());
                 }
 
-
                 status = true;
             } else {
                 status = false;
