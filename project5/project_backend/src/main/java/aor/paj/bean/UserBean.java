@@ -1,20 +1,14 @@
 package aor.paj.bean;
 
-import aor.paj.dao.CategoryDao;
-import aor.paj.dao.TaskDao;
-import aor.paj.dao.UserDao;
+import aor.paj.dao.*;
 import aor.paj.dto.DashboardDTO;
 import aor.paj.dto.LoginDto;
 import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
-import aor.paj.entity.CategoryEntity;
-import aor.paj.entity.TaskEntity;
-import aor.paj.entity.UserEntity;
+import aor.paj.entity.*;
 import aor.paj.utils.EncryptHelper;
-import aor.paj.utils.WebListenner;
 import aor.paj.websocket.Notifier;
 import aor.paj.websocket.WebSocketDashboard;
-import aor.paj.websocket.WebSocketTask;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.ejb.EJB;
@@ -35,9 +29,6 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.*;
-import org.apache.logging.log4j.*;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 @Singleton
 public class UserBean implements Serializable {
@@ -62,15 +53,20 @@ public class UserBean implements Serializable {
     WebSocketDashboard webSocketDashboard;
     @EJB
     DashboardBean dashboardBean;
+    @EJB
+    MessageDao messageDao;
+    @EJB
+    NotificationDao notifitionDao;
 
 
-    private static final Logger logger = LogManager.getLogger(TaskBean.class);
+    private static final Logger logger = LogManager.getLogger(UserBean.class);
 
     public UserBean(){
     }
 
 
     public String loginDB(LoginDto user, HttpServletRequest request){
+
         UserEntity userEntity = userDao.findUserByUsername(user.getUsername());
         user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
         if (userEntity != null && userEntity.getIsActive()){
@@ -78,14 +74,13 @@ public class UserBean implements Serializable {
                 String token = generateNewToken();
                 userEntity.setToken(token);
                 userDao.update(userEntity);
-                logger.info("User " + userEntity.getUsername() + " logged in at " + LocalDate.now());
 
-                HttpSession session = request.getSession(true);
+                HttpSession session = request.getSession();
                 session.setAttribute("token", token);
                 return token;
             }
         }
-        logger.warn("User " + user.getUsername() + " failed to login at " + LocalDate.now());
+
         return null;
     }
 
@@ -132,7 +127,7 @@ public class UserBean implements Serializable {
                 }
             }
         }
-        logger.info("User " + userRequest.getUsername() + " requested all active users at " + LocalDate.now());
+
 
         return users;
 
@@ -156,7 +151,6 @@ public class UserBean implements Serializable {
             }
         }
 
-        logger.info("User " + userRequest.getUsername() + " requested all inactive users at " + LocalDate.now());
         return users;
 
     }
@@ -195,7 +189,7 @@ public class UserBean implements Serializable {
             userEntity.setTypeOfUser(updatedUser.getTypeOfUser());
 
         }
-        logger.info("Product Owner " + userRequest.getUsername() + " updated user " + userEntity.getUsername() + " at " + LocalDate.now());
+
         return userDao.update(userEntity);
 
 
@@ -230,7 +224,7 @@ public class UserBean implements Serializable {
         if (updatedUser.getPassword() != null){
             userEntity.setPassword(updatedUser.getPassword());
     }
-        logger.info("User " + userEntity.getUsername() + " updated his profile at " + LocalDate.now());
+
             return userDao.update(userEntity);
 
     }
@@ -417,7 +411,7 @@ public void setTokenNull(String token){
                 user.setConfirmed(false);
             }
 
-            logger.info("User " + user.getUsername() + " registered at " + LocalDate.now());
+
             userDao.persist(convertUserDtotoUserEntity(user));
             sendConfirmationEmail("vsgm13@outlook.pt", tokenConfirmation, user.getUsername());
 
@@ -535,7 +529,6 @@ public void setTokenNull(String token){
 
                 userDao.persist(convertUserDtotoUserEntity(user));
                 sendConfirmationEmail("vsgm13@outlook.pt", tokenConfirmation, user.getUsername());
-                logger.info("Product Owner " + userEntityPO.getUsername() + " registered a new user with username: " + user.getUsername() + " at " + LocalDate.now());
 
                 // Enviar a mensagem para o WebSocket
                 ObjectMapper mapper = new ObjectMapper();
@@ -659,8 +652,12 @@ public void setTokenNull(String token){
         UserEntity userEntity = userDao.findUserByUsername(username);
         ArrayList<TaskEntity> tasks = taskDao.findTasksByUser(userEntity);
         ArrayList<CategoryEntity> categories = categoryDao.findCategoriesByUser(userEntity);
+        List<MessageEntity> messages = messageDao.findMessagesByUser(userEntity);
+        List<NotificationEntity> notifications = notifitionDao.findNotificationsByUser(userEntity);
 
         boolean wasRemoved=false;
+
+        //Temos de ir a todas as tabelas substituir o user que vamos apagar pelo delete user porque é a foreign key
         if (userEntity != null && !userEntity.getUsername().equals("deletedUser") && !userEntity.getUsername().equals("admin")) {
 
             if (tasks != null) {
@@ -675,9 +672,32 @@ public void setTokenNull(String token){
                 }
             }
 
-            userEntity.setIsActive(false);
+            if(messages != null){
+                for(MessageEntity message : messages){
+                    // Verifica se o utilizador é o remetente ou o destinatário da mensagem
+                    if(message.getSender().getUsername().equals(userEntity.getUsername())){
+                        message.setSender(userDao.findUserByUsername("deletedUser"));
+                    }
+                    if(message.getReceiver().getUsername().equals(userEntity.getUsername())){
+                        message.setReceiver(userDao.findUserByUsername("deletedUser"));
+                    }
+                }
+            }
+
+            if(notifications != null){
+                for(NotificationEntity notification : notifications){
+                    if(notification.getSender().getUsername().equals(userEntity.getUsername())){
+                        notification.setSender(userDao.findUserByUsername("deletedUser"));
+
+                    }
+                    if(notification.getReceiver().getUsername().equals(userEntity.getUsername())){
+                        notification.setReceiver(userDao.findUserByUsername("deletedUser"));
+                    }
+                }
+            }
+
             userDao.remove(userEntity);
-            logger.info("User " + userEntity.getUsername() + " was permanently deleted at " + LocalDate.now());
+
             wasRemoved = true;
         }
         return wasRemoved;

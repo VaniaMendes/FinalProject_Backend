@@ -25,10 +25,10 @@ public class NotificationEntity implements Serializable {
     private String content;
 
     @ManyToOne
-    @JoinColumn(name="receiver", nullable = false, unique = false, updatable = false)
+    @JoinColumn(name="receiver", nullable = false, unique = false, updatable = true)
     private UserEntity receiver;
     @ManyToOne
-    @JoinColumn(name="sender", nullable = false, unique = false, updatable = false)
+    @JoinColumn(name="sender", nullable = false, unique = false, updatable = true)
     private UserEntity sender;
 
 

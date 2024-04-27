@@ -68,7 +68,7 @@ public class TaskBean {
             taskEntity.setCategory(categoryEntity);
             try {
                 taskDao.persist(taskEntity);
-                logger.info("Task added: " + taskEntity.getTitle() + "by: " + userEntity.getUsername() + "at: " + LocalDateTime.now());
+
                 // Enviar a mensagem para o WebSocket
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.registerModule(new JavaTimeModule());
@@ -115,7 +115,7 @@ public class TaskBean {
                     if (confirmUser.getTypeOfUser().equals("developer") && taskToUpdate.getOwner().equals(confirmUser)
                             || confirmUser.getTypeOfUser().equals("scrum_master")
                             || confirmUser.getTypeOfUser().equals("product_owner")) {
-                        logger.info("User has permission to edit the task.");
+
 
                         taskToUpdate.setTitle(task.getTitle());
                         taskToUpdate.setDescription(task.getDescription());
@@ -125,7 +125,7 @@ public class TaskBean {
                         taskToUpdate.setCategory(newCategory);
 
                         taskDao.merge(taskToUpdate);
-                        logger.info("Task updated with id: " + taskToUpdate.getId() + ",  by: " + confirmUser.getUsername() + "  at: " + LocalDateTime.now());
+
 
                         // Enviar a mensagem para o WebSocket
                         ObjectMapper mapper = new ObjectMapper();
@@ -177,7 +177,6 @@ public class TaskBean {
                     taskToUpdate.setStartDate(LocalDate.now());
                 }
                 taskDao.merge(taskToUpdate);
-                logger.info("Task state updated with id: " + taskToUpdate.getId() + ",  by: " + confirmUser.getUsername() + "  at: " + LocalDateTime.now());
 
                 // Enviar a mensagem para o WebSocket
                 ObjectMapper mapper = new ObjectMapper();
@@ -216,7 +215,7 @@ public class TaskBean {
                 if (newCategory != null) {
                     taskToUpdate.setCategory(convertCategoryToCategoryEntity(category));
                     taskDao.merge(taskToUpdate);
-                    logger.info("Task category updated with title: " + taskToUpdate.getTitle() + ",  by: " + confirmUser.getUsername() + "  at: " + LocalDateTime.now());
+
                     status = true;
                 } else {
                     status = false;
@@ -283,7 +282,7 @@ public class TaskBean {
             if (tasksToDelete != null) {
                 for (TaskEntity taskEntity : tasksToDelete) {
                     taskEntity.setActive(false);
-                    logger.info("Tasks deleted of user " + confirmUser.getUsername() + "  at: " + LocalDateTime.now());
+
                 }
                 status = true;
             } else {
@@ -305,7 +304,7 @@ public class TaskBean {
         if (confirmUser != null) {
             if (taskToDelete != null) {
                 taskDao.remove(taskToDelete);
-                logger.info("Task deleted with id: " + taskToDelete.getId() + ",  by: " + confirmUser.getUsername() + "  at: " + LocalDateTime.now());
+
                 status = true;
             } else {
                 status = false;

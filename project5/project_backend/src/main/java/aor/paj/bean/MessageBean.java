@@ -138,17 +138,7 @@ public class MessageBean {
                 if (messageEntity.getSender().equals(sender)) {
                     if (updateSenderMessage(messageEntity)) {
 
-                        // Enviar a mensagem para o WebSocket
-                        ObjectMapper mapper = new ObjectMapper();
-                        mapper.registerModule(new JavaTimeModule());
 
-                        try {
-                            String jsonMsg = mapper.writeValueAsString(convertMessageEntityToDto(messageEntity));
-                            System.out.println("Serialized message: " + jsonMsg);
-                            webSocketMessage.toDoOnMessage(jsonMsg);
-                        } catch (Exception e) {
-                            System.out.println("Erro ao serializar a mensagem: " + e.getMessage());
-                        }
                         atLeastOneMessageRead = true;
                     }
                 }

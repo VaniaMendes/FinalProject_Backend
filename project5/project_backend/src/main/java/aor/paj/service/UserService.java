@@ -3,25 +3,25 @@ package aor.paj.service;
 import aor.paj.bean.TaskBean;
 import aor.paj.bean.UserBean;
 import aor.paj.dto.LoginDto;
-import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
 
-import aor.paj.entity.UserEntity;
 import aor.paj.utils.EncryptHelper;
-import aor.paj.utils.WebListenner;
+import aor.paj.utils.SessionListener;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.StringReader;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,16 +37,18 @@ public class UserService {
     @Inject
     EncryptHelper encryptHelper;
     @Inject
-    WebListenner webListenner;
+    SessionListener webListenner;
     @Inject
     HttpServletRequest httpRequest;
+    private static final Logger logger = LogManager.getLogger(UserBean.class);
+
 
 
     @POST
     @Path("/addUserDB")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response addUserToDB(User user) {
+    public Response addUserToDB(User user, @Context HttpServletRequest request) {
 
         Response response;
 
@@ -79,12 +81,9 @@ public class UserService {
             response = Response.status(Response.Status.BAD_REQUEST).entity("Something went wrong").build(); //status code 400
 
         }
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
 
+
+        logger.info("User registered successfully at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
         return response;
     }
 
@@ -108,11 +107,7 @@ public class UserService {
 
             response= Response.status(Response.Status.BAD_REQUEST).build();
         }
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return response;
 
     }
@@ -139,11 +134,7 @@ public class UserService {
 
             response = Response.status(Response.Status.BAD_REQUEST).build();
         }
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return response;
     }
 
@@ -161,11 +152,7 @@ public class UserService {
                 response = Response.status(Response.Status.NOT_FOUND).build();
             }
 
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
             return response;
         }
 
@@ -221,7 +208,7 @@ public class UserService {
     @PUT
     @Path("/changePassword")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response changePassword(@HeaderParam("email") String email, @QueryParam("password1") String password1, @QueryParam("password2") String password2) {
+    public Response changePassword(@HeaderParam("email") String email, @QueryParam("password1") String password1, @QueryParam("password2") String password2, @Context HttpServletRequest request) {
         if (email == null || password1 == null || password2 == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Missing parameters").build();
         }
@@ -241,8 +228,10 @@ public class UserService {
 
         boolean changed = userBean.changePassword(email, password1);
         if (changed) {
+            logger.info("Password changed successfully at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
             return Response.status(Response.Status.OK).entity("Password changed successfully").build();
         } else {
+            logger.warn("Failed to change password at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
             return Response.status(Response.Status.BAD_REQUEST).entity("Failed to change password").build();
         }
     }
@@ -254,22 +243,26 @@ public class UserService {
     @GET
     @Path("/passwordRecovery")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response passwordRecovery(@QueryParam("email") String email) {
+    public Response passwordRecovery(@QueryParam("email") String email, @Context HttpServletRequest request) {
         boolean sent = userBean.passwordRecovery(email);
         if (sent) {
+            logger.info("Password recovery email sent to " + email + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
             return Response.status(Response.Status.OK).entity("Please check your email box").build();
         } else {
+            logger.warn("Failed to send password recovery email to " + email + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
             return Response.status(Response.Status.BAD_REQUEST).entity("Email not sent").build();
         }
     }
 
     @PUT
     @Path("/confirmationAccount")
-    public Response confirmAccount(@QueryParam("token") String tokenConfirmation) {
+    public Response confirmAccount(@QueryParam("token") String tokenConfirmation, @Context HttpServletRequest request) {
         boolean confirmed = userBean.confirmUser(tokenConfirmation);
         if (confirmed) {
+            logger.info("User confirmed successfully at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
             return Response.status(Response.Status.OK).entity("User confirmed successfully").build();
         } else {
+            logger.warn("Failed to confirm user at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid confirmation token").build();
         }
     }
@@ -333,47 +326,56 @@ public class UserService {
     @PUT
     @Path("/restoreUser/{username}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response restoreUser(@HeaderParam("token") String token, @PathParam("username") String username) {
+    public Response restoreUser(@HeaderParam("token") String token, @PathParam("username") String username, @Context HttpServletRequest request) {
         User user = userBean.getUserByToken(token);
         if (user != null && (user.getTypeOfUser().equals("product_owner"))) {
             boolean restored = userBean.restoreUser(username);
             if (restored) {
+                logger.info("User restored successfully by " + user.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
                 return Response.status(Response.Status.OK).entity("User restored successfully").build();
             }
+            logger.warn("Failed to restore user by " + user.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to restore user").build();
         }
+
         return Response.status(Response.Status.FORBIDDEN).entity("Forbidden").build();
     }
 
     @PUT
     @Path("/deleteUser")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteUser(@HeaderParam("token") String token, @HeaderParam("username") String username) {
+    public Response deleteUser(@HeaderParam("token") String token, @HeaderParam("username") String username, @Context HttpServletRequest request) {
         User user = userBean.getUserByToken(token);
         if (user != null && (user.getTypeOfUser().equals("product_owner"))) {
             boolean deleted = userBean.removeUser(username);
             if (deleted) {
+
+                logger.info("User deleted (inactivated) successfully by " + user.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
                 return Response.status(Response.Status.OK).entity("User deleted successfully").build();
             }
 
+            logger.warn("Failed to delete user by " + user.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Forbidden").build();
         }
-        return Response.status(Response.Status.NOT_FOUND).entity("Forbidden").build();
+        return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
     }
 
     @DELETE
     @Path("/removeUser")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response removeUser(@HeaderParam("token") String token, @HeaderParam("username") String username) {
+    public Response removeUser(@HeaderParam("token") String token, @HeaderParam("username") String username, @Context HttpServletRequest request) {
         User user = userBean.getUserByToken(token);
         if (user != null && (user.getTypeOfUser().equals("product_owner"))) {
             boolean deleted = userBean.deletePermanentlyUser(username);
             if (deleted) {
+                logger.info("User deleted successfully by " + user.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
                 return Response.status(Response.Status.OK).entity("User deleted successfully").build();
             }
+            logger.warn("Failed to delete user by " + user.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
 
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Forbidden").build();
         }
+        logger.error("User not found by " + user.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
         return Response.status(Response.Status.NOT_FOUND).entity("User with this token is not found").build();
     }
 
@@ -391,9 +393,11 @@ public class UserService {
                     .add("token", token)
                     .build();
             // Retornar a resposta com o token
+            logger.info("User logged in successfully " + " with username " + user.getUsername() + "at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
             return Response.status(200).entity(jsonResponse).build();
 
         } else {
+            logger.warn("Failed to login at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
             return Response.status(403).entity("{\"error\": \"Somethin went wrong\"}").build();
         }
     }
@@ -402,7 +406,7 @@ public class UserService {
     @Path("/updateProfile")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateUser(@HeaderParam("token") String token, User updatedUser) {
+    public Response updateUser(@HeaderParam("token") String token, User updatedUser,  @Context HttpServletRequest request) {
         User user = userBean.getUserByToken(token);
 
         if (user != null) {
@@ -445,8 +449,11 @@ public class UserService {
 
             boolean updatedUSer = userBean.updateUser(token, user);
             if (updatedUSer) {
+                logger.info("User updated successfully by " + user.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
+
                 return Response.status(Response.Status.OK).entity(user).build();
             } else {
+                logger.warn("Failed to update user by " + user.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to update user").build();
             }
         } else {
@@ -458,7 +465,7 @@ public class UserService {
     @Path("/updateProfilePO")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateUserByPO(@HeaderParam("token") String token, @HeaderParam("username") String username, User updatedUser) {
+    public Response updateUserByPO(@HeaderParam("token") String token, @HeaderParam("username") String username, User updatedUser, @Context HttpServletRequest request) {
         User userRequest = userBean.getUserByToken(token);
         User beModified = userBean.getUserByUsername(username);
 
@@ -500,8 +507,10 @@ public class UserService {
 
             boolean updatedUSer = userBean.updateUserByPO(token, username, beModified);
             if (updatedUSer) {
+                logger.info("User updated successfully by " + userRequest.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
                 return Response.status(200).entity(beModified).build();
             } else {
+                logger.warn("Failed to update user by " + userRequest.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
                 return Response.status(406).entity("Failed to update user").build();
             }
         } else {
@@ -513,7 +522,7 @@ public class UserService {
     @Path("/addUserByPO")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateUserByPO(@HeaderParam("token") String token, User user) {
+    public Response updateUserByPO(@HeaderParam("token") String token, User user, @Context HttpServletRequest request) {
         User userRequest = userBean.getUserByToken(token);
         Response response;
 
@@ -541,13 +550,16 @@ public class UserService {
                 response = Response.status(422).entity("Invalid phone number").build();
 
             } else if (userBean.registerByPO(token, user)) {
+                logger.info("A new User was registered successfully by " + userRequest.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
                 response = Response.status(Response.Status.CREATED).entity("User registered successfully").build();
 
             } else {
+                logger.warn("Failed to register user by " + userRequest.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
                 response = Response.status(Response.Status.BAD_REQUEST).entity("Something went wrong").build();
 
             }
         } else {
+            logger.error("User not found by " + userRequest.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
             response = Response.status(Response.Status.UNAUTHORIZED).entity("You don´t have permission").build();
         }
 
@@ -587,7 +599,7 @@ public class UserService {
     @POST
     @Path("/logout")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response logoutValidate(@HeaderParam("token") String token) {
+    public Response logoutValidate(@HeaderParam("token") String token, @Context HttpServletRequest request) {
         User userRequest = userBean.getUserByToken(token);
 
         if (userRequest == null) {
@@ -595,6 +607,8 @@ public class UserService {
         }
 
         userBean.logoutUser(token);
+
+        logger.info("User logged out successfully by " + userRequest.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
 
         return Response.status(200).entity(" Logout successful").build();
     }

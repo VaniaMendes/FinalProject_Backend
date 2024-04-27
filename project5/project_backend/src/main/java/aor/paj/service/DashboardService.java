@@ -3,15 +3,11 @@ package aor.paj.service;
 import aor.paj.bean.DashboardBean;
 import aor.paj.bean.TaskBean;
 import aor.paj.bean.UserBean;
-import aor.paj.dao.CategoryDao;
 import aor.paj.dto.DashboardDTO;
-import aor.paj.dao.TaskDao;
-import aor.paj.dao.UserDao;
 import aor.paj.dto.User;
-import aor.paj.utils.WebListenner;
+import aor.paj.utils.SessionListener;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
@@ -34,7 +30,7 @@ public class DashboardService {
     DashboardBean dashboardBean;
 
     @Inject
-    WebListenner webListenner;
+    SessionListener webListenner;
     @Inject
     HttpServletRequest httpRequest;
     private static final Logger logger = LogManager.getLogger(TaskBean.class);
@@ -58,11 +54,7 @@ public class DashboardService {
         } else {
             response = Response.status(400).entity("Failed to retrieve user").build();
         }
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return response;
     }
 
@@ -81,14 +73,10 @@ public class DashboardService {
                 response = Response.status(200).entity(dashboardDTO).build();
        }else{
               response = Response.status(403).entity("User not authorized").build();
-              logger.error("User not authorized to consult dashboard" + user.getUsername());
+              logger.error("User not authorized to consult dashboard" + (user != null ? user.getUsername() : null));
        }
 
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return response;
     }
 }

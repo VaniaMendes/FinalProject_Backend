@@ -2,24 +2,16 @@ package aor.paj.service;
 
 import aor.paj.bean.MessageBean;
 import aor.paj.bean.UserBean;
-import aor.paj.dao.MessageDao;
 import aor.paj.dto.MessageDto;
 import aor.paj.dto.User;
-import aor.paj.entity.MessageEntity;
-import aor.paj.entity.UserEntity;
-import aor.paj.utils.WebListenner;
-import aor.paj.websocket.LocalDateTimeAdapter;
-import aor.paj.websocket.WebSocketMessage;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
-import jakarta.mail.Message;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,12 +23,8 @@ public class MessageService {
     MessageBean messageBean;
     @Inject
     UserBean userBean;
-    @Inject
-    WebSocketMessage webSocketMessage;
-    @Inject
-    WebListenner webListenner;
-    @Inject
-    HttpServletRequest httpRequest;
+
+    private static final Logger logger = LogManager.getLogger(MessageBean.class);
 
     @GET
     @Path("/{user2}")
@@ -55,18 +43,14 @@ public class MessageService {
             return Response.status(Response.Status.NOT_FOUND).entity("No messages found between these users").build();
         }
 
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return Response.ok(messages).build();
     }
 
     @POST
     @Path("/send")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response sendMessage(@HeaderParam("token") String token, MessageDto messageDto) {
+    public Response sendMessage(@HeaderParam("token") String token, MessageDto messageDto, @Context HttpServletRequest request) {
 
         User user= userBean.getUserByToken(token);
         Response response;
@@ -84,15 +68,11 @@ public class MessageService {
 
 
         if (messageSend) {
-
-            //Atualiza a última atividade da sessão
-            HttpSession session = httpRequest.getSession(false);
-            if (session != null) {
-                webListenner.updateLastActivityTime(session);
-            }
+            logger.info("Message sent by " + user.getUsername() + " to " + messageDto.getReceiver() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             return response = Response.ok().entity("Message sented").build();
 
         } else {
+            logger.warn("Failed to send message by " + user.getUsername() + " to " + messageDto.getReceiver() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             return response = Response.status(Response.Status.BAD_REQUEST).entity("Message could not be sent").build();
         }
     }
@@ -112,11 +92,8 @@ public class MessageService {
 
 
         if (messageRead) {
-            //Atualiza a última atividade da sessão
-            HttpSession session = httpRequest.getSession(false);
-            if (session != null) {
-                webListenner.updateLastActivityTime(session);
-            }
+            logger.info("Message marked as read by " + user.getUsername() + " at " + LocalDateTime.now());
+
             return response = Response.ok().entity("Message marked as read").build();
 
         } else {

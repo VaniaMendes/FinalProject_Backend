@@ -2,24 +2,24 @@ package aor.paj.service;
 
 
 import aor.paj.bean.CategoryBean;
-import aor.paj.bean.TaskBean;
 import aor.paj.bean.UserBean;
 import aor.paj.dto.Category;
-import aor.paj.dto.Task;
-import aor.paj.utils.WebListenner;
+import aor.paj.utils.SessionListener;
 import jakarta.inject.Inject;
-import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.time.LocalDateTime;
 
 
 @Path("/categories")
 public class CategoryService {
-
 
     @Inject
     UserBean userBean;
@@ -27,16 +27,17 @@ public class CategoryService {
     @Inject
     CategoryBean categoryBean;
     @Inject
-    WebListenner webListenner;
+    SessionListener webListenner;
     @Inject
     HttpServletRequest httpRequest;
+    private static final Logger logger = LogManager.getLogger(CategoryBean.class);
 
 
     @POST
     @Path("/createCategory")
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response addCategory(@HeaderParam("token") String token, Category category) {
+    public Response addCategory(@HeaderParam("token") String token, Category category, @Context HttpServletRequest request){
         Response response;
 
         if (!categoryBean.isUserAllowedToInteractWithCategories(token)) {
@@ -50,22 +51,22 @@ public class CategoryService {
             response = Response.status(422).entity("Category name already in use").build();
 
         } else if (categoryBean.addCategory(token, category)) {
+            logger.info("A new category is created by " + userBean.getUserByToken(token).getUsername() + "with id " + category.getIdCategory() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(200).entity("A new category is created").build();
 
         } else {
+            logger.warn("Failed to create a new category by " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(403).entity("Invalid Token").build();
         }
 
-        // Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(true);
-        webListenner.updateLastActivityTime(session);
+
         return response;
     }
 
     @PUT
     @Path("/update/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateCategory(@HeaderParam("token") String token, @PathParam("id") String id, Category category) {
+    public Response updateCategory(@HeaderParam("token") String token, @PathParam("id") String id, Category category, @Context HttpServletRequest request) {
 
         Response response;
 
@@ -82,15 +83,15 @@ public class CategoryService {
             response = Response.status(422).entity("Title not available").build();
 
         } else if (categoryBean.updateCategory(token, id, category)) {
+            logger.info("Category updated by " + userBean.getUserByToken(token).getUsername() + "with id " + category.getIdCategory() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(200).entity("Category updated sucessfully").build();
 
-        } else
+        } else {
+            logger.warn("Failed to update category by " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(400).entity("Failed to update category").build();
+        }
 
 
-        // Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(true);
-        webListenner.updateLastActivityTime(session);
 
         return response;
     }
@@ -98,7 +99,7 @@ public class CategoryService {
     @DELETE
     @Path("/delete/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteCategory(@HeaderParam("token") String token, @PathParam("id") String id) {
+    public Response deleteCategory(@HeaderParam("token") String token, @PathParam("id") String id, @Context HttpServletRequest request){
 
         Response response;
 
@@ -112,17 +113,15 @@ public class CategoryService {
             response = Response.status(422).entity("There are tasks with this category, cant delete it.").build();
 
         } else if (categoryBean.deleteCategory(token, id)) {
+            logger.info("Category deleted by " + userBean.getUserByToken(token).getUsername() + "with id " + id + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(200).entity("Category deleted successfully").build();
 
         } else {
+            logger.warn("Failed to delete category by " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(400).entity("Failed to delete category").build();
         }
 
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return response;
     }
 
@@ -142,11 +141,7 @@ public class CategoryService {
             response = Response.status(200).entity(categoryBean.getAllCategories(token)).build();
         }
 
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return response;
     }
 
@@ -169,11 +164,7 @@ public class CategoryService {
             response = Response.status(200).entity(categoryBean.getCategoryById(token, id)).build();
         }
 
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return response;
     }
 
@@ -195,11 +186,7 @@ public class CategoryService {
             response = Response.status(200).entity(categoryBean.getCategoryIdByTitle(token, title)).build();
         }
 
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return response;
     }
 

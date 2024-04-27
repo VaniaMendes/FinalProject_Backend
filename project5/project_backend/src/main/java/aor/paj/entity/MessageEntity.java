@@ -22,15 +22,16 @@ public class MessageEntity implements Serializable {
     @Column(name="id", nullable = false, unique = true, updatable = false)
     private long id;
 
+    //Tive de colocar o updatable a true para quando apagar users definitivamente, poder substituir o user pelo deleted user
     @Column(name="content", nullable = false, updatable = true)
     private String content;
 
     @ManyToOne
-    @JoinColumn(name="sender", nullable = false, unique = false, updatable = false)
+    @JoinColumn(name="sender", nullable = false, unique = false, updatable = true)
     private UserEntity sender;
 
     @ManyToOne
-    @JoinColumn(name="receiver", nullable = false, unique = false, updatable = false)
+    @JoinColumn(name="receiver", nullable = false, unique = false, updatable = true)
     private UserEntity receiver;
 
 

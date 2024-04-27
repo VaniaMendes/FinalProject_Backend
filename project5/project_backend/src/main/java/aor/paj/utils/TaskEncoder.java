@@ -23,11 +23,11 @@ public class TaskEncoder implements Encoder.Text<Task> {
 
     @Override
     public void init(EndpointConfig config) {
-        // no op
+
     }
 
     @Override
     public void destroy() {
-        // no op
+
     }
 }

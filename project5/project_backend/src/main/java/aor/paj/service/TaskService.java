@@ -6,15 +6,19 @@ import aor.paj.dao.CategoryDao;
 import aor.paj.dto.Category;
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
-import aor.paj.utils.WebListenner;
+import aor.paj.utils.SessionListener;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,15 +37,17 @@ public class TaskService {
 
 
     @Inject
-    WebListenner webListenner;
+    SessionListener webListenner;
     @Inject
     HttpServletRequest httpRequest;
+
+    private static final Logger logger = LogManager.getLogger(TaskService.class);
 
     @POST
     @Path("/createTask")
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response addTask(@HeaderParam("token") String token, @HeaderParam("categoryId") String categoryId, Task task) {
+    public Response addTask(@HeaderParam("token") String token, @HeaderParam("categoryId") String categoryId, Task task, @Context HttpServletRequest request) {
         LocalDate currentDate = LocalDate.now();
 
         Response response;
@@ -66,16 +72,15 @@ public class TaskService {
             response = Response.status(422).entity("State can only be toDo, doing or done").build();
 
         } else if (taskBean.addTask(token,task, categoryId)) {
+            logger.info("Task created with id: " + task.getId() + " by user: " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
+
             response = Response.status(200).entity("A new task is created").build();
 
         } else {
+            logger.warn("Failed to create task by user: " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(400).entity("Failed to update task").build();
         }
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
 
         return response;
     }
@@ -84,7 +89,7 @@ public class TaskService {
     @Path("/updateTask")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateTask(@HeaderParam("token") String token, @HeaderParam("categoryId") String categoryId,
-                               @HeaderParam("taskId") String taskId, Task task) {
+                               @HeaderParam("taskId") String taskId, Task task, @Context HttpServletRequest request){
 
         Response response;
 
@@ -106,15 +111,14 @@ public class TaskService {
 
         } else if (taskBean.updateTask(token, taskId, task, categoryId)) {
             response = Response.status(200).entity("Task updated sucessfully").build();
+            logger.info("Task updated with id: " + taskId + " by user: " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
 
-        } else
+        } else {
+            logger.warn("Failed to update task by user: " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(400).entity("Failed to update task").build();
-
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
         }
+
+
         return response;
     }
 
@@ -123,7 +127,7 @@ public class TaskService {
     @PUT
     @Path("/{taskId}/updateCategory")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateTaskCategory(@HeaderParam("token") String token, @PathParam("taskId") String taskId, Category category) {
+    public Response updateTaskCategory(@HeaderParam("token") String token, @PathParam("taskId") String taskId, Category category, @Context HttpServletRequest request ) {
         Response response;
         User requestingUser = userBean.getUserByToken(token);
 
@@ -134,27 +138,23 @@ public class TaskService {
             response = Response.status(409).entity("You dont have permissions to edit that").build();
 
         } else if (taskBean.updateTaskCategory(token, taskId, category)) {
+            logger.info("Task category changed with id: " + taskId + " by user: " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(200).entity("Task category changed successfully").build();
 
         } else {
+            logger.warn("Failed to update task category by user: " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(400).entity("Task category update failed").build();
         }
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return response;
     }
 
     @PUT
     @Path("/{taskId}/status")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateTaskStatus(@HeaderParam("token") String token, @PathParam("taskId") String taskId, @HeaderParam("newState") String state) {
+    public Response updateTaskStatus(@HeaderParam("token") String token, @PathParam("taskId") String taskId, @HeaderParam("newState") String state, @Context HttpServletRequest request){
         Response response;
 
-        //JsonObject jsonObject = Json.createReader(new StringReader(state)).readObject();
-        //String newStatusConverted = jsonObject.getString("state");
 
         if (userBean.getUserByToken(token) == null) {
             response = Response.status(403).entity("Invalid token").build();
@@ -164,15 +164,13 @@ public class TaskService {
 
         } else if (taskBean.updateTaskState(token, taskId, state)) {
             response = Response.status(200).entity("Task state updated successfully").build();
+            logger.info("Task state changed with id: " + taskId + " by user: " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
 
         } else
             response = Response.status(400).entity("Failed to update task state").build();
+        logger.warn("Failed to update task state by user: " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
 
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return response;
     }
 
@@ -180,7 +178,7 @@ public class TaskService {
     @PUT
     @Path("/{taskId}/softDelete")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response softDeleteTask(@HeaderParam("token") String token, @PathParam("taskId") String taskId) {
+    public Response softDeleteTask(@HeaderParam("token") String token, @PathParam("taskId") String taskId, @Context HttpServletRequest request) {
         Response response;
 
 
@@ -192,16 +190,15 @@ public class TaskService {
 
 
         } else if (taskBean.updateTaskActiveState(token, taskId)) {
+            logger.info("Task active state changed with id: " + taskId + " by user: " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(200).entity("Task active state updated successfully").build();
 
-        } else
+        } else {
+            logger.warn("Failed to update task active state by user: " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(400).entity("Failed to update task active state").build();
-
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
         }
+
+
         return response;
     }
 
@@ -226,18 +223,14 @@ public class TaskService {
             response = Response.status(400).entity("Failed to retrieve tasks").build();
         }
 
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return response;
     }
 
     @DELETE
     @Path("/deleteTasksByUsername/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteAllTasksByUsername(@HeaderParam("token") String token, @PathParam("username") String username) {
+    public Response deleteAllTasksByUsername(@HeaderParam("token") String token, @PathParam("username") String username, @Context HttpServletRequest request){
         Response response;
 
         if (userBean.getUserByToken(token) == null) {
@@ -247,16 +240,14 @@ public class TaskService {
             response = Response.status(403).entity("You dont have permissions to do that").build();
 
         } else if (taskBean.deleteTasksByUsername(username))  {
+            logger.info("Task of user: " + username + " deleted by user: " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(200).entity("Tasks deleted successfully").build();
 
         } else {
+            logger.warn("Failed to delete tasks of user: " + username + " by user: " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(400).entity("Failed to execute order").build();
         }
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
 
         return response;
     }
@@ -264,7 +255,7 @@ public class TaskService {
     @DELETE
     @Path("/{id}/hardDeleteTask")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response hardDeleteTask(@HeaderParam("token") String token, @PathParam("id") String id) {
+    public Response hardDeleteTask(@HeaderParam("token") String token, @PathParam("id") String id, @Context HttpServletRequest request){
         Response response;
 
         if (userBean.getUserByToken(token) == null) {
@@ -274,16 +265,14 @@ public class TaskService {
             response = Response.status(403).entity("You dont have permissions to do that").build();
 
         } else if (taskBean.hardDeleteTask(token, id))  {
+            logger.info("Task deleted permanently with id: " + id + " by user: " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(200).entity("Task permanently deleted").build();
 
         } else {
+            logger.warn("Failed to delete task permanently with id: " + id + " by user: " + userBean.getUserByToken(token).getUsername() + " at " + LocalDateTime.now() + " with IPAdress " + request.getRemoteAddr());
             response = Response.status(400).entity("Failed to execute order").build();
         }
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
 
         return response;
     }
@@ -313,11 +302,7 @@ public class TaskService {
         }else {
             return Response.ok(userTasksByCategory).build();
         }
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return Response.ok(userTasksByCategory).build();
     }
 
@@ -339,11 +324,7 @@ public class TaskService {
             response = Response.status(400).entity("Failed to retrieve tasks").build();
         }
 
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return response;
     }
 
@@ -365,11 +346,7 @@ public class TaskService {
             response = Response.status(400).entity("Failed to retrieve tasks").build();
         }
 
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return response;
     }
 
@@ -396,12 +373,9 @@ public class TaskService {
             } else {
                 response = Response.status(400).entity("This user has no tasks").build();
             }
-            //Atualiza a última atividade da sessão
-            HttpSession session = httpRequest.getSession(false);
-            if (session != null) {
-                webListenner.updateLastActivityTime(session);
-            }
+
         }
+
         return response;
     }
 
@@ -423,11 +397,7 @@ public class TaskService {
         } else {
             response = Response.status(400).entity("Failed to retrieve task").build();
         }
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return response;
     }
 
@@ -449,11 +419,7 @@ public class TaskService {
         } else {
             response = Response.status(400).entity("Failed to retrieve user").build();
         }
-        //Atualiza a última atividade da sessão
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null) {
-            webListenner.updateLastActivityTime(session);
-        }
+
         return response;
     }
 
