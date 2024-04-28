@@ -7,6 +7,7 @@ import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
 import aor.paj.entity.*;
 import aor.paj.utils.EncryptHelper;
+import aor.paj.utils.SessionListener;
 import aor.paj.websocket.Notifier;
 import aor.paj.websocket.WebSocketDashboard;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,6 +60,7 @@ public class UserBean implements Serializable {
     NotificationDao notifitionDao;
 
 
+
     private static final Logger logger = LogManager.getLogger(UserBean.class);
 
     public UserBean(){
@@ -75,14 +77,21 @@ public class UserBean implements Serializable {
                 userEntity.setToken(token);
                 userDao.update(userEntity);
 
-                HttpSession session = request.getSession();
+                HttpSession session = request.getSession(true);
+                session.setMaxInactiveInterval((userEntity.getSessionTimeout())*60);
+                session.setAttribute("sessionTimeout", userEntity.getSessionTimeout());
                 session.setAttribute("token", token);
+
+
+
                 return token;
             }
         }
 
         return null;
     }
+
+
 
     public User getUserByEmail(String email){
         UserEntity userEntity = userDao.findUserByEmail(email);
@@ -337,6 +346,7 @@ public class UserBean implements Serializable {
         userEntity.setTypeOfUser(user.getTypeOfUser());
         userEntity.setConfirmed(user.isConfirmed());
         userEntity.setTokenConfirmation(user.getTokenConfirmation());
+        userEntity.setSessionTimeout(user.getSessionTimeout());
         return userEntity;
     }
 
@@ -518,6 +528,7 @@ public void setTokenNull(String token){
                 //Guardar o token de confirmação
                 user.setTokenConfirmation(tokenConfirmation);
                 user.setPassword(generateRandomPassword(8));
+                user.setSessionTimeout(userDao.findUserByUsername("admin").getSessionTimeout());
                 user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
                 // Se o user é "admin", definir isConfirmed como true para ter acesso à aplicação
                 if (user.getUsername().equals("admin")) {
@@ -552,6 +563,21 @@ public void setTokenNull(String token){
         }
     }
 
+    public boolean updateSessionTimeout (String token, int sessionTimeout){
+        UserEntity userEntity = userDao.findUserByToken(token);
+        List<UserEntity> users = userDao.findAllUsers();
+
+        boolean wasUpdated = false;
+        if(userEntity != null){
+            for(UserEntity user : users){
+                    user.setSessionTimeout(sessionTimeout);
+                    userDao.update(user);
+                    wasUpdated = true;
+            }
+
+        }
+        return wasUpdated;
+    }
     public boolean isAnyFieldEmpty(User user) {
         boolean status = false;
 
@@ -816,6 +842,7 @@ public void setTokenNull(String token){
             admin.setImgURL("https://t4.ftcdn.net/jpg/04/75/00/99/240_F_475009987_zwsk4c77x3cTpcI3W1C1LU4pOSyPKaqi.jpg");
             admin.setTypeOfUser("product_owner");
             admin.setConfirmed(true);
+            admin.setSessionTimeout(30);
 
             register(admin);
         }
@@ -832,6 +859,7 @@ public void setTokenNull(String token){
             deletedUser.setImgURL("https://www.iconpacks.net/icons/1/free-remove-user-icon-303-thumb.png");
             deletedUser.setTypeOfUser("developer");
             deletedUser.setActive(false);
+            deletedUser.setSessionTimeout(30);
 
             register(deletedUser);
         }

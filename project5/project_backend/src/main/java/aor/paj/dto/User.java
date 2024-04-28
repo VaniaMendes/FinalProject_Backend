@@ -36,6 +36,8 @@ public class User {
 
     @XmlElement
     private LocalDate registerDate;
+    @XmlElement
+    private int sessionTimeout;
 
 
     public User(String username, String password, String email, String firstName, String lastName,
@@ -54,6 +56,7 @@ public class User {
         // Gerar um token de confirmação
         this.tokenConfirmation = generateTokenConfirmation();
         this.registerDate = null;
+        this.sessionTimeout = getSessionTimeout();
     }
 
     public User() {
@@ -169,5 +172,13 @@ public class User {
 
     public void setRegisterDate(LocalDate registerDate) {
         this.registerDate = registerDate;
+    }
+
+    public int getSessionTimeout() {
+        return sessionTimeout;
+    }
+
+    public void setSessionTimeout(int sessionTimeout) {
+        this.sessionTimeout = sessionTimeout;
     }
 }

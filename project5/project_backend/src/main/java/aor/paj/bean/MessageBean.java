@@ -129,16 +129,21 @@ public class MessageBean {
         UserEntity receiver = userDao.findUserByToken(token);
         UserEntity sender = userDao.findUserByUsername(username);
 
+        if (receiver == null || sender == null) {
+            return false; // Utilizador não encontrado
+        }
         List<MessageEntity> messageEntities = messageDao.findMessagesUnReadBetweenUsers(receiver, sender);
         logger.debug("Mensagens não lidas: " + messageEntities.size());
+
+        if (messageEntities == null || messageEntities.isEmpty()) {
+            return false; // Não há mensagens não lidas entre os usuários
+        }
 
         boolean atLeastOneMessageRead = false;
         for (MessageEntity messageEntity : messageEntities) {
             if (messageEntity.getId() <= id) {
                 if (messageEntity.getSender().equals(sender)) {
                     if (updateSenderMessage(messageEntity)) {
-
-
                         atLeastOneMessageRead = true;
                     }
                 }
@@ -158,7 +163,6 @@ public class MessageBean {
             return messageDao.updateMessage(messageEntity);
         }
     }
-
 
 
         public MessageDto convertMessageEntityToDto(MessageEntity messageEntity) {

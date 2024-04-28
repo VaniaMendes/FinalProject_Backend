@@ -56,7 +56,6 @@ public class TaskBean {
     public TaskBean(){
     }
 
-
     public boolean addTask(String token, Task task, String categoryId) {
         UserEntity userEntity = userDao.findUserByToken(token);
 

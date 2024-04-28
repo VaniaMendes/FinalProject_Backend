@@ -64,6 +64,8 @@ public class UserEntity implements Serializable {
 
 	@Column(name = "registerDate", nullable = true, unique = false, updatable = true)
 	private LocalDate registerDate;
+	@Column(name = "sessionTimeout", nullable = false, unique = false, updatable = true)
+	private int sessionTimeout;
 
 
 	@OneToMany(mappedBy = "owner")
@@ -217,6 +219,14 @@ public class UserEntity implements Serializable {
 
 	public void setMessagesReceived(Set<MessageEntity> messagesReceived) {
 		this.messagesReceived = messagesReceived;
+	}
+
+	public int getSessionTimeout() {
+		return sessionTimeout;
+	}
+
+	public void setSessionTimeout(int sessionTimeout) {
+		this.sessionTimeout = sessionTimeout;
 	}
 }
 

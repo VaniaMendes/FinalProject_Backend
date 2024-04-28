@@ -6,6 +6,7 @@ import aor.paj.dto.LoginDto;
 import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
 
+import aor.paj.entity.UserEntity;
 import aor.paj.utils.EncryptHelper;
 import aor.paj.utils.SessionListener;
 import jakarta.inject.Inject;
@@ -339,6 +340,20 @@ public class UserService {
         }
 
         return Response.status(Response.Status.FORBIDDEN).entity("Forbidden").build();
+    }
+
+    @PUT
+    @Path("/updateSessionTimeout")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateAllUsers(@HeaderParam("token") String token, @QueryParam("sessionTimeout") int sessionTimeout, @Context HttpServletRequest request) {
+        User user = userBean.getUserByToken(token);
+        if(user != null && user.getTypeOfUser().equals("product_owner")){
+            userBean.updateSessionTimeout(token,sessionTimeout);
+            logger.info("Session timeout updated successfully by " + user.getUsername() + " at " + LocalDateTime.now() + " from IPAdress: " + request.getRemoteAddr());
+            return Response.status(Response.Status.OK).entity("Session timeout updated successfully").build();
+        }
+
+        return Response.status(Response.Status.OK).entity("All users updated successfully").build();
     }
 
     @PUT

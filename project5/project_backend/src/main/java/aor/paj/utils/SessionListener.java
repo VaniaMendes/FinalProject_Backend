@@ -1,6 +1,7 @@
 package aor.paj.utils;
 
 import aor.paj.bean.UserBean;
+import aor.paj.dto.User;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebListener;
 import jakarta.servlet.http.HttpSession;
@@ -12,42 +13,52 @@ import jakarta.servlet.http.HttpSessionListener;
 public class SessionListener implements HttpSessionListener {
 
 
-    private static final int SESSION_TIMEOUT = 3 * 60; //Definido o session  timeout para 30 min
-
     @Inject
     UserBean userBean;
 
-    @Override
-    public void sessionCreated(HttpSessionEvent event) {
-        HttpSession session = event.getSession();
-        session.setMaxInactiveInterval(SESSION_TIMEOUT);
-        updateLastAccessedTimestamp(session);
-        System.out.println("Session created");
-    }
-
 
     @Override
-    public void sessionDestroyed(HttpSessionEvent event) {
-        HttpSession session = event.getSession();
+    public void sessionCreated(HttpSessionEvent se) {
 
-        long lastActivityTime = (long) session.getAttribute("lastActivityTime");
-        long currentTime = System.currentTimeMillis();
-        long sessionDuration = currentTime - lastActivityTime;
-        if(sessionDuration >= (SESSION_TIMEOUT * 1000)){
-            String token = (String) session.getAttribute("token");
-            if (token != null) {
-                userBean.logoutUser(token);
-                System.out.println("Session timeout exceeded");
-            }
+            System.out.println("Tempo de sessão iniciado");
+
 
         }
 
+
+    @Override
+    public void sessionDestroyed(HttpSessionEvent se) {
+        String token = (String) se.getSession().getAttribute("token");
+        Integer sessionTimeout = (Integer) se.getSession().getAttribute("sessionTimeout");
+        if(sessionTimeout != null){
+            Long lastActivityTimeAttribute = (Long) se.getSession().getAttribute("lastActivityTime");
+            if (lastActivityTimeAttribute != null) {
+                long lastActivityTime = lastActivityTimeAttribute.longValue();
+                long currentTime = System.currentTimeMillis();
+                long duration = currentTime - lastActivityTime;
+                System.out.println("Token: " + token);
+                if (token != null) {
+                    if (duration > (sessionTimeout * 60 * 1000)) {
+                        System.out.println(duration);
+                        userBean.logoutUser(token);
+                        System.out.println("Session time out ultrapassado");
+                    }
+                }
+            } else {
+                System.out.println("Last activity time not defined");
+            }
+        }else{
+            System.out.println("Session timeout not defined");
+        }
     }
 
-    public void updateLastAccessedTimestamp(HttpSession session) {
+
+    // Método para atualizar o tempo de última atividade da sessão
+    public void updateLastActivityTime(HttpSession session) {
         session.setAttribute("lastActivityTime", System.currentTimeMillis());
-        System.out.println("Last activity time updated: " + session.getAttribute("lastActivityTime"));
 
+        System.out.println("Tempo de última atividade atualizado");
     }
-}
 
+
+}

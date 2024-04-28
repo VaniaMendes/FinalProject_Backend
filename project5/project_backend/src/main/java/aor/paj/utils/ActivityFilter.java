@@ -12,15 +12,18 @@ import java.io.IOException;
 @WebFilter("/*")
 public class ActivityFilter implements Filter {
 
+
     @Inject
     SessionListener sessionListener;
-
         @Override
         public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
             if (request instanceof HttpServletRequest) {
                 HttpSession session = ((HttpServletRequest) request).getSession(true);
                 if (session != null) {
-                    sessionListener.updateLastAccessedTimestamp(session);
+                    // Atualiza o tempo de última atividade da sessão
+                    sessionListener.updateLastActivityTime(session);
+
+
                 }
             }
             chain.doFilter(request, response);
