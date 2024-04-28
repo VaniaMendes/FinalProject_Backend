@@ -17,8 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -60,28 +62,54 @@ public class MessageTest {
         assertEquals(1, result.size());
     }
 
-
     @Test
-    public void testMarkMessagesAsRead() {
+    public void testGetMessagesBetweenUsers_ReturnsEmptyListWhenNoMessagesFound() {
         // Arrange
         String token = "token";
-        long id = 1L;
-        String username = "username";
-        UserEntity receiver = new UserEntity();
-        UserEntity sender = new UserEntity();
-        when(userDao.findUserByToken(token)).thenReturn(receiver);
-        when(userDao.findUserByUsername(username)).thenReturn(sender);
-        MessageEntity message = new MessageEntity();
-        message.setSender(sender); // Definir o remetente da mensagem
-        when(messageDao.findMessagesUnReadBetweenUsers(receiver, sender)).thenReturn(Arrays.asList(message));
+        String username2 = "username2";
+        UserEntity userEntity1 = new UserEntity();
+        UserEntity userEntity2 = new UserEntity();
+        when(userDao.findUserByToken(token)).thenReturn(userEntity1);
+        when(userDao.findUserByUsername(username2)).thenReturn(userEntity2);
+
+        // Simula as mensagens entre dois users
+        when(messageDao.findMessagesBetweenUsers(userEntity1, userEntity2)).thenReturn(Collections.emptyList());
 
         // Act
-        boolean result = messageBean.markMessagesAsRead(token, id, username);
+        List<MessageDto> result = messageBean.getMessagesBetweenUsers(token, username2);
+
+        // Assert
+        assertTrue(result.isEmpty());
+    }
+
+
+    @Test
+    public void testUpdateSenderMessage_WithNullMessageEntity_ReturnsFalse() {
+        // Arrange
+        MessageEntity messageEntity = null;
+
+        // Act
+        boolean result = messageBean.updateSenderMessage(messageEntity);
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test
+    public void testUpdateSenderMessage_WithValidMessageEntity_ReturnsTrue() {
+        // Arrange
+        MessageEntity messageEntity = new MessageEntity();
+
+        when(messageDao.updateMessage(messageEntity)).thenReturn(true);
+
+        // Act
+        boolean result = messageBean.updateSenderMessage(messageEntity);
 
         // Assert
         assertTrue(result);
+        assertTrue(messageEntity.isMessageRead());
     }
 
 
 
-    }
+}

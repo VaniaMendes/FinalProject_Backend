@@ -45,10 +45,10 @@ public class SessionListener implements HttpSessionListener {
                     }
                 }
             } else {
-                System.out.println("Last activity time not defined");
+
             }
         }else{
-            System.out.println("Session timeout not defined");
+
         }
     }
 

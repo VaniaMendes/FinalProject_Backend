@@ -23,8 +23,7 @@ class UserBeanTest {
     private UserDao userDao;
 
 
-    @Mock
-    private EncryptHelper encryptHelper;
+
 
     @InjectMocks
     private UserBean userBean;
