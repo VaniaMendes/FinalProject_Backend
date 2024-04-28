@@ -22,7 +22,6 @@ public class SessionListener implements HttpSessionListener {
 
             System.out.println("Tempo de sessão iniciado");
 
-
         }
 
 
